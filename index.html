@@ -1,0 +1,132 @@
+<html>
+<head>
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+    background: #1e4287;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.matrix-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+.neon-text {
+    font-family: 'Courier New', monospace;
+    font-size: 32px;
+    color: #66ffff;
+    text-shadow: 0 0 7px #66ffff;
+    letter-spacing: 2px;
+    font-weight: 900;
+    z-index: 100;
+    position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    border-right: 2px solid #66ffff;
+    animation: typing 3.5s steps(40, end),
+               blink-caret .75s step-end infinite,
+               glow 2s ease-in-out infinite alternate;
+    margin: 0 auto;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent }
+    50% { border-color: #66ffff }
+}
+
+@keyframes glow {
+    from {
+        text-shadow: 0 0 7px #66ffff;
+    }
+    to {
+        text-shadow: 0 0 10px #66ffff;
+    }
+}
+
+canvas {
+    opacity: 0.4;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <div class="matrix-bg">
+            <canvas id="matrix"></canvas>
+        </div>
+        <div class="neon-text">------------------------ Necessity is the mother of invention. --------------------------</div>
+    </div>
+
+<script>
+const canvas = document.getElementById('matrix');
+const ctx = canvas.getContext('2d');
+
+ctx.imageSmoothingEnabled = false;
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters = '0123456789ABCDEF';
+const fontSize = 14;
+const columns = canvas.width / fontSize;
+
+const drops = Array(Math.floor(columns)).fill(0).map(() => 
+    Math.floor(Math.random() * canvas.height/fontSize)
+);
+
+function draw() {
+    ctx.fillStyle = 'rgba(30, 66, 135, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < drops.length; i++) {
+        const text = letters[Math.floor(Math.random() * letters.length)];
+        
+        if (drops[i] <= 1) {
+            ctx.fillStyle = '#ffffff';
+        } else if (drops[i] <= 4) {
+            ctx.fillStyle = '#99ddff';
+        } else {
+            ctx.fillStyle = '#66ccff';
+        }
+        
+        ctx.font = `${fontSize}px monospace`;
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+        }
+        drops[i]++;
+    }
+}
+
+setInterval(draw, 33);
+
+window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    ctx.imageSmoothingEnabled = false;
+    drops.length = Math.floor(canvas.width / fontSize);
+    for(let i = 0; i < drops.length; i++) {
+        drops[i] = Math.floor(Math.random() * canvas.height/fontSize);
+    }
+});
+</script>
+</body>
+</html>
