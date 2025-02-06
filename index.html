@@ -140,46 +140,57 @@ h2 {
     border-radius: 5px;
     border: 1px solid rgba(102, 255, 255, 0.1);
 }
-
 .paper-title {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Roboto', sans-serif;  /* 改用 Roboto */
     color: #66ffff;
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-    font-weight: 700;
-    letter-spacing: 0.02em;
-    line-height: 1.4;
+    font-size: 1.3rem;
+    margin-bottom: 0.8rem;
+    font-weight: 500;  /* 适中的粗细 */
+    letter-spacing: -0.01em;  /* 稍微紧凑的字间距 */
+    line-height: 1.5;
 }
 
 .paper-authors {
     font-family: 'Roboto', sans-serif;
     color: #99ddff;
-    font-size: 0.9rem;
-    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    margin-bottom: 0.7rem;
     font-weight: 300;
     letter-spacing: 0.01em;
 }
 
-.paper-venue {
-    color: #ffffff;
-    font-style: italic;
-    font-size: 0.9rem;
-}
-
 .paper-links {
-    margin-top: 0.5rem;
+    margin-top: 0.8rem;
 }
 
 .paper-link {
     color: #66ffff;
-    margin-right: 1rem;
+    margin-right: 1.2rem;
     text-decoration: none;
     font-size: 0.9rem;
     font-family: 'Space Mono', monospace;
+    opacity: 0.9;
+    transition: all 0.2s ease;
 }
 
 .paper-link:hover {
-    text-decoration: underline;
+    text-decoration: none;
+    opacity: 1;
+    color: #99ffff;
+}
+
+.paper {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 1.8rem;  /* 稍微增加内边距 */
+    margin-bottom: 1.5rem;
+    border-radius: 6px;
+    border: 1px solid rgba(102, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.paper:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(102, 255, 255, 0.2);
 }
 
 canvas {
