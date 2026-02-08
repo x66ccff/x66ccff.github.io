@@ -1,21 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kai Ruan - Academic Profile</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Poppins:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+:root {
+    --primary-color: #66ffff;
+    --secondary-color: #99ddff;
+    --bg-color: #1e4287;
+    --glass-bg: rgba(0, 0, 0, 0.5);
+    --card-bg: rgba(0, 0, 0, 0.3);
+    --card-hover: rgba(0, 0, 0, 0.45);
+    --border-color: rgba(102, 255, 255, 0.15);
+}
+
 body {
     margin: 0;
     overflow-x: hidden;
-    background: #1e4287;
+    background: var(--bg-color);
     color: #fff;
     font-family: 'Inter', sans-serif;
 }
 
 .container {
     min-height: 100vh;
-    padding: 2rem;
+    padding: 3rem 1.5rem;
     position: relative;
+    box-sizing: border-box;
 }
 
 .matrix-bg {
@@ -28,189 +42,262 @@ body {
 }
 
 .profile-section {
-    max-width: 1200px;
+    max-width: 1000px;
     margin: 0 auto;
-    padding: 2rem;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    backdrop-filter: blur(10px);
+    padding: 2.5rem;
+    background: var(--glass-bg);
+    border-radius: 16px;
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
+/* --- Header Section --- */
 .name {
     font-family: 'Montserrat', sans-serif;
-    font-size: 2.8rem;
-    color: #66ffff;
-    text-shadow: 0 0 7px #66ffff;
-    margin-bottom: 1rem;
+    font-size: 3rem;
+    color: var(--primary-color);
+    text-shadow: 0 0 10px rgba(102, 255, 255, 0.4);
+    margin-bottom: 0.5rem;
     font-weight: 700;
-    letter-spacing: 0.01em;
+    letter-spacing: -0.02em;
 }
 
 .title {
     font-family: 'Space Mono', monospace;
-    font-size: 1.2rem;
-    color: #99ddff;
+    font-size: 1.1rem;
+    color: var(--secondary-color);
     margin-bottom: 2rem;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.02em;
+    opacity: 0.9;
 }
 
 .social-links {
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .btn {
     display: inline-flex;
     align-items: center;
-    padding: 0.5rem 1rem;
-    margin-right: 1rem;
-    background: rgba(102, 255, 255, 0.1);
-    border: 1px solid #66ffff;
-    border-radius: 5px;
-    color: #66ffff;
+    padding: 0.6rem 1.2rem;
+    background: rgba(102, 255, 255, 0.05);
+    border: 1px solid var(--primary-color);
+    border-radius: 6px;
+    color: var(--primary-color);
     text-decoration: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     font-size: 0.9rem;
     font-family: 'Space Mono', monospace;
-    letter-spacing: 0.02em;
+    font-weight: 700;
 }
 
 .btn i {
-    margin-right: 0.5rem;
-    font-size: 1.1rem;
+    margin-right: 0.6rem;
+    font-size: 1rem;
 }
 
 .btn:hover {
-    background: rgba(102, 255, 255, 0.2);
-    transform: translateY(-2px);
+    background: rgba(102, 255, 255, 0.15);
+    transform: translateY(-3px);
+    box-shadow: 0 5px 15px rgba(102, 255, 255, 0.15);
 }
 
-.section {
-    margin-top: 2rem;
-    margin-bottom: 2rem;
-}
-
+/* --- Section Headers --- */
 h2 {
     font-family: 'Poppins', sans-serif;
     font-size: 1.8rem;
     font-weight: 600;
-    color: #66ffff;
+    color: #fff;
     margin-bottom: 1.5rem;
-    letter-spacing: 0.01em;
+    display: flex;
+    align-items: center;
 }
 
+h2::before {
+    content: '';
+    display: block;
+    width: 6px;
+    height: 24px;
+    background: var(--primary-color);
+    margin-right: 12px;
+    border-radius: 2px;
+    box-shadow: 0 0 8px var(--primary-color);
+}
+
+/* --- Education --- */
 .education-item {
-    margin-bottom: 1.5rem;
-    padding: 1rem;
-    background: rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    border: 1px solid rgba(102, 255, 255, 0.1);
+    margin-bottom: 1rem;
+    padding: 1.2rem;
+    background: var(--card-bg);
+    border-radius: 8px;
+    border-left: 3px solid rgba(102, 255, 255, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.education-item:hover {
+    background: var(--card-hover);
+    transform: translateX(5px);
 }
 
 .education-year {
-    color: #66ffff;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    font-family: 'Inter', sans-serif;
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    margin-bottom: 0.2rem;
+    font-family: 'Space Mono', monospace;
 }
 
 .education-degree {
-    color: #ffffff;
+    color: #fff;
     font-size: 1.1rem;
-    margin-bottom: 0.3rem;
-    font-family: 'Space Mono', monospace;
-    font-weight: 400;
-    letter-spacing: 0.02em;
+    font-weight: 600;
+    margin-bottom: 0.2rem;
 }
 
 .education-school {
-    color: #99ddff;
-    font-family: 'Inter', sans-serif;
+    color: var(--secondary-color);
+    font-size: 0.95rem;
     font-weight: 300;
-    letter-spacing: 0.02em;
 }
 
+/* --- Publications (Redesigned) --- */
 .papers-section {
-    margin-top: 3rem;
+    margin-top: 3.5rem;
+}
+
+.paper {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    display: flex; /* Flexbox layout for Side-by-Side */
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.paper:hover {
+    background: var(--card-hover);
+    border-color: rgba(102, 255, 255, 0.4);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+.paper-content {
+    flex: 1; /* Takes remaining space */
 }
 
 .paper-title {
     font-family: 'Poppins', sans-serif;
-    color: #66ffff;
-    font-size: 1.3rem;
-    margin-bottom: 0.8rem;
-    font-weight: 500;
-    letter-spacing: -0.01em;
-    line-height: 1.5;
+    color: #fff;
+    font-size: 1.25rem;
+    margin-bottom: 0.6rem;
+    font-weight: 600;
+    line-height: 1.4;
 }
 
 .paper-authors {
     font-family: 'Inter', sans-serif;
-    color: #99ddff;
+    color: #b3e0ff;
     font-size: 0.95rem;
-    margin-bottom: 0.7rem;
-    font-weight: 300;
-    letter-spacing: 0.01em;
+    margin-bottom: 0.8rem;
+    line-height: 1.6;
+}
+
+.paper-authors strong {
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.venue-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: rgba(102, 255, 255, 0.1);
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    border-radius: 4px;
+    border: 1px solid rgba(102, 255, 255, 0.3);
+    margin-bottom: 0.8rem;
 }
 
 .paper-links {
-    margin-top: 0.8rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 0.5rem;
 }
 
 .paper-link {
-    color: #66ffff;
-    margin-right: 1.2rem;
+    color: var(--secondary-color);
     text-decoration: none;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-family: 'Space Mono', monospace;
-    opacity: 0.9;
+    opacity: 0.8;
     transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.paper-link i {
+    margin-right: 0.4rem;
 }
 
 .paper-link:hover {
-    text-decoration: none;
     opacity: 1;
-    color: #99ffff;
+    color: var(--primary-color);
 }
 
-.paper {
-    background: rgba(0, 0, 0, 0.3);
-    padding: 1.8rem;
-    margin-bottom: 1.5rem;
-    border-radius: 6px;
+/* --- Project Thumbnails --- */
+.paper-image {
+    flex: 0 0 180px; /* Fixed width for desktop */
+    height: 110px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: rgba(0,0,0,0.2);
     border: 1px solid rgba(102, 255, 255, 0.1);
-    transition: all 0.3s ease;
+    position: relative;
 }
 
-.paper:hover {
-    background: rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(102, 255, 255, 0.2);
+.paper-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
 }
 
+.paper:hover .paper-image img {
+    transform: scale(1.05);
+}
+
+/* --- Canvas --- */
 canvas {
-    opacity: 0.4;
+    opacity: 0.35;
 }
 
+/* --- Mobile Responsive --- */
 @media (max-width: 768px) {
-    .container {
-        padding: 1rem;
-    }
-    
     .profile-section {
-        padding: 1rem;
+        padding: 1.5rem;
     }
     
     .name {
-        font-size: 2rem;
+        font-size: 2.2rem;
     }
-    
-    .social-links {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
+
+    .paper {
+        flex-direction: column-reverse; /* Stack: Text top (flex-direction reverses order in code usually, but here we want Image under text or Text over image. Let's just stack normally) */
+        flex-direction: column;
     }
-    
-    .btn {
-        margin-bottom: 0.5rem;
+
+    .paper-image {
+        width: 100%; /* Full width on mobile */
+        flex: none;
+        height: 160px;
+        margin-top: 1rem;
     }
 }
 </style>
@@ -220,22 +307,20 @@ canvas {
         <div class="matrix-bg">
             <canvas id="matrix"></canvas>
         </div>
+        
         <div class="profile-section">
             <div class="name">Kai Ruan</div>
             <div class="title">Ph.D. Student at Renmin University of China</div>
             
             <div class="social-links">
                 <a href="https://scholar.google.com/citations?user=tokSmGMAAAAJ" class="btn">
-                    <i class="fas fa-graduation-cap"></i>
-                    Google Scholar
+                    <i class="fas fa-graduation-cap"></i> Google Scholar
                 </a>
                 <a href="https://github.com/x66ccff" class="btn">
-                    <i class="fab fa-github"></i>
-                    GitHub
+                    <i class="fab fa-github"></i> GitHub
                 </a>
                 <a href="mailto:kairuan@ruc.edu.cn" class="btn">
-                    <i class="fas fa-envelope"></i>
-                    Email
+                    <i class="fas fa-envelope"></i> Email
                 </a>
             </div>
 
@@ -249,61 +334,143 @@ canvas {
                 
                 <div class="education-item">
                     <div class="education-year">2019 - 2023</div>
-                    <div class="education-degree">B.E.</div>
+                    <div class="education-degree">B.E. Computer Science</div>
                     <div class="education-school">Xidian University</div>
                 </div>
             </div>
 
             <div class="papers-section">
-                <h2>Publications</h2>
+                <h2>Selected Publications</h2>
                 
+                <!-- Paper 1: Nature Comp Sci -->
                 <div class="paper">
-                    <div class="paper-title">Benchmarking LLMs' Swarm Intelligence</div>
-                    <div class="paper-authors">Kai Ruan, Mowen Huang, Ji-Rong Wen, Hao Sun</div>
-                    <div class="paper-links">
-                        <a href="https://arxiv.org/abs/2505.04364" class="paper-link">
-                            <i class="fas fa-archive"></i> arXiv
-                        </a>
-                        <a href="https://arxiv.org/pdf/2505.04364" class="paper-link">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </a>
-                        <a href="https://github.com/RUC-GSAI/YuLan-SwarmIntell" class="paper-link">
-                            <i class="fas fa-code"></i> Code
-                        </a>
+                    <div class="paper-content">
+                        <div class="paper-title">Discovering physical laws with parallel symbolic enumeration</div>
+                        <div class="venue-badge">Nature Computational Science 2026</div>
+                        <div class="paper-authors">
+                            <strong>Kai Ruan</strong>, Yilong Xu, Ze-Feng Gao, Yang Liu, Yike Guo, Ji-Rong Wen, Hao Sun
+                        </div>
+                        <div class="paper-links">
+                            <a href="https://doi.org/10.1038/s43588-025-00904-8" class="paper-link">
+                                <i class="fas fa-external-link-alt"></i> DOI
+                            </a>
+                            <a href="#" class="paper-link">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="paper">
-                    <div class="paper-title">Discovering symbolic expressions with parallelized tree search</div>
-                    <div class="paper-authors">Kai Ruan, Ze-Feng Gao, Yike Guo, Hao Sun, Ji-Rong Wen, Yang Liu</div>
-                    <div class="paper-links">
-                        <a href="https://arxiv.org/abs/2407.04405" class="paper-link">
-                            <i class="fas fa-archive"></i> arXiv
-                        </a>
-                        <a href="https://arxiv.org/pdf/2407.04405" class="paper-link">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </a>
-                        <a href="https://github.com/intell-sci-comput/PTS" class="paper-link">
-                            <i class="fas fa-code"></i> Code
-                        </a>
+                    <div class="paper-image">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-nature-cs.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
                     </div>
                 </div>
 
+                <!-- Paper 2: LiveIdeaBench -->
                 <div class="paper">
-                    <div class="paper-title">LiveIdeaBench: Evaluating LLMs' Scientific Creativity and Idea Generation with Minimal Context</div>
-                    <div class="paper-authors">Kai Ruan, Xuan Wang, Jixiang Hong, Hao Sun</div>
-                    <div class="paper-links">
-                        <a href="https://arxiv.org/abs/2412.17596" class="paper-link">
-                            <i class="fas fa-archive"></i> arXiv
-                        </a>
-                        <a href="https://arxiv.org/pdf/2412.17596" class="paper-link">
-                            <i class="fas fa-file-pdf"></i> PDF
-                        </a>
-                        <a href="https://github.com/x66ccff/liveideabench" class="paper-link">
-                            <i class="fas fa-code"></i> Code
-                        </a>
+                    <div class="paper-content">
+                        <div class="paper-title">LiveIdeaBench: Evaluating LLMs' Scientific Creativity and Idea Generation with Minimal Context</div>
+                        <div class="venue-badge">Nature Communications (In Publish)</div>
+                        <div class="paper-authors">
+                            <strong>Kai Ruan</strong>, Xuan Wang, Jixiang Hong, Hao Sun
+                        </div>
+                        <div class="paper-links">
+                            <a href="https://arxiv.org/abs/2412.17596" class="paper-link">
+                                <i class="fas fa-archive"></i> arXiv
+                            </a>
+                            <a href="https://github.com/x66ccff/liveideabench" class="paper-link">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                    <div class="paper-image">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-liveidea.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
                     </div>
                 </div>
+
+                <!-- Paper 3: Swarm Intelligence -->
+                <div class="paper">
+                    <div class="paper-content">
+                        <div class="paper-title">Benchmarking LLMs' Swarm Intelligence</div>
+                        <div class="venue-badge">Preprint</div>
+                        <div class="paper-authors">
+                            <strong>Kai Ruan</strong>, Mowen Huang, Ji-Rong Wen, Hao Sun
+                        </div>
+                        <div class="paper-links">
+                            <a href="https://arxiv.org/abs/2505.04364" class="paper-link">
+                                <i class="fas fa-archive"></i> arXiv
+                            </a>
+                            <a href="https://github.com/RUC-GSAI/YuLan-SwarmIntell" class="paper-link">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                    <div class="paper-image">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-swarm.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                    </div>
+                </div>
+
+                <!-- Paper 4: AniMo (CVPR) -->
+                <div class="paper">
+                    <div class="paper-content">
+                        <div class="paper-title">AniMo: Species-Aware Model for Text-Driven Animal Motion Generation</div>
+                        <div class="venue-badge">CVPR (CCF A)</div>
+                        <div class="paper-authors">
+                            X Wang, <strong>K Ruan</strong>, X Zhang, G Wang
+                        </div>
+                        <div class="paper-links">
+                            <a href="#" class="paper-link">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                            <a href="#" class="paper-link">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                    <div class="paper-image">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-animo.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                    </div>
+                </div>
+
+                <!-- Paper 5: X-MoGen (AAAI) -->
+                <div class="paper">
+                    <div class="paper-content">
+                        <div class="paper-title">X-MoGen: Unified Motion Generation across Humans and Animals</div>
+                        <div class="venue-badge">AAAI</div>
+                        <div class="paper-authors">
+                            X Wang, <strong>K Ruan</strong>, L Qian, Z Guo, C Su, G Wang
+                        </div>
+                        <div class="paper-links">
+                            <a href="#" class="paper-link">
+                                <i class="fas fa-file-pdf"></i> PDF
+                            </a>
+                        </div>
+                    </div>
+                    <div class="paper-image">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-xmogen.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                    </div>
+                </div>
+
+                <!-- Paper 6: PTS (Kept from original list as it seemed important, remove if unwanted) -->
+                <div class="paper">
+                    <div class="paper-content">
+                        <div class="paper-title">Discovering symbolic expressions with parallelized tree search</div>
+                        <div class="venue-badge">Preprint</div>
+                        <div class="paper-authors">
+                            <strong>Kai Ruan</strong>, Ze-Feng Gao, Yike Guo, Hao Sun, Ji-Rong Wen, Yang Liu
+                        </div>
+                        <div class="paper-links">
+                            <a href="https://arxiv.org/abs/2407.04405" class="paper-link">
+                                <i class="fas fa-archive"></i> arXiv
+                            </a>
+                            <a href="https://github.com/intell-sci-comput/PTS" class="paper-link">
+                                <i class="fab fa-github"></i> Code
+                            </a>
+                        </div>
+                    </div>
+                    <div class="paper-image">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-pts.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
