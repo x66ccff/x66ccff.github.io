@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,23 +7,69 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
+/* --- CSS Variables for Theme Switching --- */
 :root {
+    /* Dark Mode (Default) */
     --primary-color: #66ffff;
     --secondary-color: #99ddff;
     --gold-color: #ffd700;
+    --hf-blue: #3b82f6;
+    
     --bg-color: #1e4287;
+    --text-main: #ffffff;
+    --text-sub: #cccccc;
+    --text-muted: rgba(153, 221, 255, 0.6);
+    --text-author: #b3e0ff;
+    
     --glass-bg: rgba(0, 0, 0, 0.5);
     --card-bg: rgba(0, 0, 0, 0.3);
     --card-hover: rgba(0, 0, 0, 0.45);
     --border-color: rgba(102, 255, 255, 0.15);
+    
+    --logo-bg: rgba(255, 255, 255, 0.05);
+    --badge-bg: rgba(102, 255, 255, 0.1);
+    --highlight-badge-bg: rgba(102, 255, 255, 0.15);
+    --highlight-badge-text: #ffffff;
+    
+    --matrix-filter: none;
+    --matrix-opacity: 1;
+}
+
+[data-theme="light"] {
+    /* Light Mode */
+    --primary-color: #0066cc;
+    --secondary-color: #004488;
+    --gold-color: #d4af37; /* Darker gold for white bg */
+    --hf-blue: #2563eb;
+    
+    --bg-color: #f0f4f8;
+    --text-main: #1a1a1a;
+    --text-sub: #555555;
+    --text-muted: #666666;
+    --text-author: #2c5282;
+    
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --card-bg: rgba(255, 255, 255, 0.6);
+    --card-hover: rgba(255, 255, 255, 0.95);
+    --border-color: rgba(0, 102, 204, 0.15);
+    
+    --logo-bg: rgba(0, 0, 0, 0.03);
+    --badge-bg: rgba(0, 102, 204, 0.08);
+    --highlight-badge-bg: var(--primary-color); /* Solid color for contrast */
+    --highlight-badge-text: #ffffff;
+    
+    /* Invert Matrix to create a light tech background without changing JS */
+    --matrix-filter: invert(1) hue-rotate(180deg) opacity(0.15);
+    --matrix-opacity: 0.3;
 }
 
 body {
     margin: 0;
     overflow-x: hidden;
     background: var(--bg-color);
-    color: #fff;
+    color: var(--text-main);
     font-family: 'Inter', sans-serif;
+    transition: background 0.5s ease, color 0.5s ease;
 }
 
 .container {
@@ -40,6 +86,34 @@ body {
     right: 0;
     bottom: 0;
     z-index: -1;
+    filter: var(--matrix-filter);
+    transition: filter 0.5s ease;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+    position: fixed;
+    top: 1.5rem;
+    right: 1.5rem;
+    z-index: 100;
+    background: var(--glass-bg);
+    border: 1px solid var(--border-color);
+    color: var(--primary-color);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.theme-toggle:hover {
+    transform: rotate(15deg) scale(1.1);
+    background: var(--card-hover);
 }
 
 .profile-section {
@@ -49,8 +123,13 @@ body {
     background: var(--glass-bg);
     border-radius: 16px;
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.05); /* Keep subtle light border */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    transition: background 0.5s ease;
+}
+
+[data-theme="light"] .profile-section {
+    border-color: rgba(0,0,0,0.05);
 }
 
 /* --- Header Section --- */
@@ -58,7 +137,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-size: 3rem;
     color: var(--primary-color);
-    text-shadow: 0 0 10px rgba(102, 255, 255, 0.4);
+    text-shadow: 0 0 10px rgba(102, 255, 255, 0.2); /* Reduced glow for better light mode */
     margin-bottom: 0.5rem;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -84,7 +163,7 @@ body {
     display: inline-flex;
     align-items: center;
     padding: 0.6rem 1.2rem;
-    background: rgba(102, 255, 255, 0.05);
+    background: var(--logo-bg);
     border: 1px solid var(--primary-color);
     border-radius: 6px;
     color: var(--primary-color);
@@ -101,9 +180,10 @@ body {
 }
 
 .btn:hover {
-    background: rgba(102, 255, 255, 0.15);
+    background: var(--highlight-badge-bg);
+    color: var(--highlight-badge-text);
     transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(102, 255, 255, 0.15);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 /* --- Section Headers --- */
@@ -111,7 +191,7 @@ h2 {
     font-family: 'Poppins', sans-serif;
     font-size: 1.8rem;
     font-weight: 600;
-    color: #fff;
+    color: var(--text-main);
     margin-bottom: 1.5rem;
     margin-top: 2.5rem;
     display: flex;
@@ -129,7 +209,7 @@ h2::before {
     box-shadow: 0 0 8px var(--primary-color);
 }
 
-/* --- Timeline Items (Education & Experience) --- */
+/* --- Timeline Items --- */
 .timeline-item {
     margin-bottom: 1rem;
     padding: 1.2rem;
@@ -145,19 +225,19 @@ h2::before {
 .timeline-item:hover {
     background: var(--card-hover);
     transform: translateX(5px);
-    border-color: rgba(102, 255, 255, 0.3);
+    border-color: var(--primary-color);
 }
 
 .item-logo {
     flex: 0 0 64px;
     height: 64px;
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--logo-bg);
     border-radius: 10px;
     padding: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid rgba(102, 255, 255, 0.1);
+    border: 1px solid var(--border-color);
 }
 
 .item-logo img {
@@ -179,7 +259,7 @@ h2::before {
 }
 
 .item-title {
-    color: #fff;
+    color: var(--text-main);
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 0.2rem;
@@ -194,7 +274,7 @@ h2::before {
 .item-desc {
     margin-top: 0.4rem;
     font-size: 0.9rem;
-    color: #ccc;
+    color: var(--text-sub);
     font-style: italic;
     font-family: 'Inter', sans-serif;
 }
@@ -218,8 +298,8 @@ h2::before {
 
 .paper:hover {
     background: var(--card-hover);
-    border-color: rgba(102, 255, 255, 0.4);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    border-color: var(--primary-color);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
 }
 
 .paper-content {
@@ -228,7 +308,7 @@ h2::before {
 
 .paper-title {
     font-family: 'Poppins', sans-serif;
-    color: #fff;
+    color: var(--text-main);
     font-size: 1.25rem;
     margin-bottom: 0.6rem;
     font-weight: 600;
@@ -237,7 +317,7 @@ h2::before {
 
 .paper-authors {
     font-family: 'Inter', sans-serif;
-    color: #b3e0ff;
+    color: var(--text-author);
     font-size: 0.95rem;
     margin-bottom: 0.4rem;
     line-height: 1.6;
@@ -250,7 +330,7 @@ h2::before {
 
 .co-author-note {
     font-size: 0.8rem;
-    color: rgba(153, 221, 255, 0.6);
+    color: var(--text-muted);
     margin-bottom: 0.8rem;
     font-family: 'Space Mono', monospace;
 }
@@ -267,26 +347,26 @@ h2::before {
 .venue-badge-highlight {
     display: inline-block;
     padding: 0.25rem 0.8rem;
-    background: rgba(102, 255, 255, 0.15);
-    color: #fff;
+    background: var(--highlight-badge-bg);
+    color: var(--highlight-badge-text);
     font-size: 0.85rem;
     font-family: 'Space Mono', monospace;
     border-radius: 4px;
     border: 1px solid var(--primary-color);
     font-weight: 700;
-    text-shadow: 0 0 8px rgba(102, 255, 255, 0.6);
-    box-shadow: 0 0 10px rgba(102, 255, 255, 0.1);
+    text-shadow: 0 0 8px rgba(102, 255, 255, 0.2);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .venue-badge {
     display: inline-block;
     padding: 0.2rem 0.6rem;
-    background: rgba(102, 255, 255, 0.1);
+    background: var(--badge-bg);
     color: var(--primary-color);
     font-size: 0.8rem;
     font-family: 'Space Mono', monospace;
     border-radius: 4px;
-    border: 1px solid rgba(102, 255, 255, 0.3);
+    border: 1px solid var(--border-color);
 }
 
 /* Super highlighted Cover Article Badge */
@@ -294,7 +374,7 @@ h2::before {
     display: inline-flex;
     align-items: center;
     padding: 0.35rem 0.9rem;
-    background: rgba(255, 215, 0, 0.2);
+    background: rgba(255, 215, 0, 0.15);
     color: var(--gold-color);
     font-size: 0.85rem;
     font-family: 'Space Mono', monospace;
@@ -302,7 +382,7 @@ h2::before {
     border: 1px solid var(--gold-color);
     font-weight: 800;
     text-decoration: none;
-    box-shadow: 0 0 12px rgba(255, 215, 0, 0.25);
+    box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     cursor: pointer;
 }
@@ -312,11 +392,11 @@ h2::before {
 }
 
 .cover-badge:hover {
-    background: rgba(255, 215, 0, 0.35);
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    background: var(--gold-color);
     color: #fff;
-    border-color: #fff;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+    border-color: var(--gold-color);
 }
 
 .paper-links {
@@ -352,8 +432,8 @@ h2::before {
     height: 110px;
     border-radius: 8px;
     overflow: hidden;
-    background: rgba(0,0,0,0.2);
-    border: 1px solid rgba(102, 255, 255, 0.1);
+    background: rgba(0,0,0,0.1);
+    border: 1px solid var(--border-color);
     position: relative;
 }
 
@@ -404,14 +484,25 @@ canvas {
         height: 50px;
         margin-top: 5px;
     }
+    
+    .theme-toggle {
+        top: 1rem;
+        right: 1rem;
+    }
 }
 </style>
 </head>
 <body>
     <div class="container">
+        <!-- Background Matrix Effect -->
         <div class="matrix-bg">
             <canvas id="matrix"></canvas>
         </div>
+        
+        <!-- Theme Toggle Button -->
+        <button class="theme-toggle" id="theme-btn" aria-label="Toggle Dark/Light Mode">
+            <i class="fas fa-moon"></i>
+        </button>
         
         <div class="profile-section">
             <div class="name">Kai Ruan</div>
@@ -518,7 +609,7 @@ canvas {
                         </div>
                     </div>
                     <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-nature-cs.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-nature-cs.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
                     </div>
                 </div>
 
@@ -548,7 +639,7 @@ canvas {
                         </div>
                     </div>
                     <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-liveidea.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-liveidea.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
                     </div>
                 </div>
 
@@ -572,7 +663,7 @@ canvas {
                         </div>
                     </div>
                     <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-swarm.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-swarm.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
                     </div>
                 </div>
 
@@ -597,7 +688,7 @@ canvas {
                         </div>
                     </div>
                     <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-animo.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-animo.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
                     </div>
                 </div>
 
@@ -622,7 +713,7 @@ canvas {
                         </div>
                     </div>
                     <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-xmogen.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-xmogen.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
                     </div>
                 </div>
 
@@ -631,6 +722,7 @@ canvas {
     </div>
 
 <script>
+// --- Matrix Rain Effect (Unchanged JS) ---
 const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
 
@@ -648,7 +740,8 @@ const drops = Array(Math.floor(columns)).fill(0).map(() =>
 );
 
 function draw() {
-    ctx.fillStyle = 'rgba(30, 66, 135, 0.05)';
+    // Background clear color is hardcoded in JS, but CSS filter handles the theme inversion
+    ctx.fillStyle = 'rgba(30, 66, 135, 0.05)'; 
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     for (let i = 0; i < drops.length; i++) {
@@ -672,7 +765,7 @@ function draw() {
     }
 }
 
-setInterval(draw, 33);
+let interval = setInterval(draw, 33);
 
 window.addEventListener('resize', () => {
     canvas.width = window.innerWidth;
@@ -682,6 +775,42 @@ window.addEventListener('resize', () => {
     for(let i = 0; i < drops.length; i++) {
         drops[i] = Math.floor(Math.random() * canvas.height/fontSize);
     }
+});
+
+// --- Theme Toggle Logic ---
+const themeBtn = document.getElementById('theme-btn');
+const icon = themeBtn.querySelector('i');
+const html = document.documentElement;
+
+// Function to set theme
+function setTheme(theme) {
+    if (theme === 'light') {
+        html.setAttribute('data-theme', 'light');
+        icon.className = 'fas fa-sun';
+        localStorage.setItem('theme', 'light');
+    } else {
+        html.removeAttribute('data-theme');
+        icon.className = 'fas fa-moon';
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// Check local storage or system preference on load
+const savedTheme = localStorage.getItem('theme');
+const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+if (savedTheme) {
+    setTheme(savedTheme);
+} else {
+    // Default to system preference
+    setTheme(systemPrefersDark ? 'dark' : 'light');
+}
+
+// Toggle button click event
+themeBtn.addEventListener('click', () => {
+    const currentTheme = html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    setTheme(newTheme);
 });
 </script>
 </body>
