@@ -1,490 +1,492 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kai Ruan - Academic Profile</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<style>
-/* --- CSS Variables for Theme Switching --- */
-:root {
-    /* Dark Mode (Default) */
-    --primary-color: #66ffff;
-    --secondary-color: #99ddff;
-    --gold-color: #ffd700;
-    --hf-blue: #3b82f6;
-    
-    --bg-color: #1e4287;
-    --text-main: #ffffff;
-    --text-sub: #cccccc;
-    --text-muted: rgba(153, 221, 255, 0.6);
-    --text-author: #b3e0ff;
-    
-    --glass-bg: rgba(0, 0, 0, 0.5);
-    --card-bg: rgba(0, 0, 0, 0.3);
-    --card-hover: rgba(0, 0, 0, 0.45);
-    --border-color: rgba(102, 255, 255, 0.15);
-    
-    --logo-bg: rgba(255, 255, 255, 0.05);
-    --badge-bg: rgba(102, 255, 255, 0.1);
-    --highlight-badge-bg: rgba(102, 255, 255, 0.15);
-    --highlight-badge-text: #ffffff;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kai Ruan - Academic Profile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS Variables for Theme Switching --- */
+        :root {
+            /* Dark Mode (Default) */
+            --primary-color: #66ffff;
+            --secondary-color: #99ddff;
+            --gold-color: #ffd700;
+            --hf-blue: #3b82f6;
+            --bg-color: #1e4287;
+            --text-main: #ffffff;
+            --text-sub: #cccccc;
+            --text-muted: rgba(153, 221, 255, 0.6);
+            --text-author: #b3e0ff;
+            --glass-bg: rgba(0, 0, 0, 0.5);
+            --card-bg: rgba(0, 0, 0, 0.3);
+            --card-hover: rgba(0, 0, 0, 0.45);
+            --border-color: rgba(102, 255, 255, 0.15);
+            --logo-bg: rgba(255, 255, 255, 0.05);
+            --badge-bg: rgba(102, 255, 255, 0.1);
+            --highlight-badge-bg: rgba(102, 255, 255, 0.15);
+            --highlight-badge-text: #ffffff;
+        }
 
-[data-theme="light"] {
-    /* Light Mode */
-    --primary-color: #0066cc;
-    --secondary-color: #004488;
-    --gold-color: #d4af37;
-    --hf-blue: #2563eb;
-    
-    --bg-color: #f0f4f8; /* Light gray-blue background */
-    --text-main: #1a1a1a;
-    --text-sub: #555555;
-    --text-muted: #666666;
-    --text-author: #2c5282;
-    
-    --glass-bg: rgba(255, 255, 255, 0.85);
-    --card-bg: rgba(255, 255, 255, 0.6);
-    --card-hover: rgba(255, 255, 255, 0.95);
-    --border-color: rgba(0, 102, 204, 0.15);
-    
-    --logo-bg: rgba(0, 0, 0, 0.03);
-    --badge-bg: rgba(0, 102, 204, 0.08);
-    --highlight-badge-bg: var(--primary-color);
-    --highlight-badge-text: #ffffff;
-}
+        [data-theme="light"] {
+            /* Light Mode */
+            --primary-color: #0066cc;
+            --secondary-color: #004488;
+            --gold-color: #d4af37;
+            --hf-blue: #2563eb;
+            --bg-color: #f0f4f8; /* Light gray-blue background */
+            --text-main: #1a1a1a;
+            --text-sub: #555555;
+            --text-muted: #666666;
+            --text-author: #2c5282;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-hover: rgba(255, 255, 255, 0.95);
+            --border-color: rgba(0, 102, 204, 0.15);
+            --logo-bg: rgba(0, 0, 0, 0.03);
+            --badge-bg: rgba(0, 102, 204, 0.08);
+            --highlight-badge-bg: var(--primary-color);
+            --highlight-badge-text: #ffffff;
+        }
 
-body {
-    margin: 0;
-    overflow-x: hidden;
-    background: var(--bg-color);
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
-    transition: background 0.5s ease, color 0.5s ease;
-}
+        body {
+            margin: 0;
+            overflow-x: hidden;
+            background: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            transition: background 0.5s ease, color 0.5s ease;
+        }
 
-.container {
-    min-height: 100vh;
-    padding: 3rem 1.5rem;
-    position: relative;
-    box-sizing: border-box;
-}
+        .container {
+            min-height: 100vh;
+            padding: 3rem 1.5rem;
+            position: relative;
+            box-sizing: border-box;
+        }
 
-.matrix-bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: -1;
-    /* Removed CSS filter, color is now handled by JS */
-    transition: opacity 0.5s ease;
-}
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -1;
+            transition: opacity 0.5s ease;
+        }
 
-/* Theme Toggle Button */
-.theme-toggle {
-    position: fixed;
-    top: 1.5rem;
-    right: 1.5rem;
-    z-index: 100;
-    background: var(--glass-bg);
-    border: 1px solid var(--border-color);
-    color: var(--primary-color);
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    backdrop-filter: blur(10px);
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
+        /* Theme Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            z-index: 100;
+            background: var(--glass-bg);
+            border: 1px solid var(--border-color);
+            color: var(--primary-color);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
 
-.theme-toggle:hover {
-    transform: rotate(15deg) scale(1.1);
-    background: var(--card-hover);
-}
+        .theme-toggle:hover {
+            transform: rotate(15deg) scale(1.1);
+            background: var(--card-hover);
+        }
 
-.profile-section {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 2.5rem;
-    background: var(--glass-bg);
-    border-radius: 16px;
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    transition: background 0.5s ease, border-color 0.5s ease;
-}
+        .profile-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2.5rem;
+            background: var(--glass-bg);
+            border-radius: 16px;
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            transition: background 0.5s ease, border-color 0.5s ease;
+        }
 
-[data-theme="light"] .profile-section {
-    border-color: rgba(0,0,0,0.05);
-}
+        [data-theme="light"] .profile-section {
+            border-color: rgba(0,0,0,0.05);
+        }
 
-/* --- Header Section --- */
-.name {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 3rem;
-    color: var(--primary-color);
-    text-shadow: 0 0 10px rgba(102, 255, 255, 0.2);
-    margin-bottom: 0.5rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-}
+        /* --- Header Section --- */
+        .name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(102, 255, 255, 0.2);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
 
-.title {
-    font-family: 'Space Mono', monospace;
-    font-size: 1.1rem;
-    color: var(--secondary-color);
-    margin-bottom: 2rem;
-    letter-spacing: 0.02em;
-    opacity: 0.9;
-}
+        .title {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            letter-spacing: 0.02em;
+            opacity: 0.9;
+        }
 
-.social-links {
-    margin-bottom: 3rem;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
+        .social-links {
+            margin-bottom: 2rem; /* Reduced slightly to accommodate music player */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
 
-.btn {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.6rem 1.2rem;
-    background: var(--logo-bg);
-    border: 1px solid var(--primary-color);
-    border-radius: 6px;
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    font-size: 0.9rem;
-    font-family: 'Space Mono', monospace;
-    font-weight: 700;
-}
+        /* --- Music Player Styles --- */
+        .music-section {
+            margin-bottom: 3rem;
+            max-width: 100%;
+            overflow: hidden;
+            border-radius: 8px;
+            display: inline-block; /* Keeps it left aligned like buttons */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Optional: Add a subtle border in dark mode to blend better */
+        [data-theme="dark"] .music-section iframe {
+            opacity: 0.9;
+        }
 
-.btn i {
-    margin-right: 0.6rem;
-    font-size: 1rem;
-}
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.6rem 1.2rem;
+            background: var(--logo-bg);
+            border: 1px solid var(--primary-color);
+            border-radius: 6px;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            font-size: 0.9rem;
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+        }
 
-.btn:hover {
-    background: var(--highlight-badge-bg);
-    color: var(--highlight-badge-text);
-    transform: translateY(-3px);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-}
+        .btn i {
+            margin-right: 0.6rem;
+            font-size: 1rem;
+        }
 
-/* --- Section Headers --- */
-h2 {
-    font-family: 'Poppins', sans-serif;
-    font-size: 1.8rem;
-    font-weight: 600;
-    color: var(--text-main);
-    margin-bottom: 1.5rem;
-    margin-top: 2.5rem;
-    display: flex;
-    align-items: center;
-}
+        .btn:hover {
+            background: var(--highlight-badge-bg);
+            color: var(--highlight-badge-text);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
 
-h2::before {
-    content: '';
-    display: block;
-    width: 6px;
-    height: 24px;
-    background: var(--primary-color);
-    margin-right: 12px;
-    border-radius: 2px;
-    box-shadow: 0 0 8px var(--primary-color);
-}
+        /* --- Section Headers --- */
+        h2 {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 1.5rem;
+            margin-top: 2.5rem;
+            display: flex;
+            align-items: center;
+        }
 
-/* --- Timeline Items --- */
-.timeline-item {
-    margin-bottom: 1rem;
-    padding: 1.2rem;
-    background: var(--card-bg);
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    transition: transform 0.3s ease, background 0.3s ease;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-}
+        h2::before {
+            content: '';
+            display: block;
+            width: 6px;
+            height: 24px;
+            background: var(--primary-color);
+            margin-right: 12px;
+            border-radius: 2px;
+            box-shadow: 0 0 8px var(--primary-color);
+        }
 
-.timeline-item:hover {
-    background: var(--card-hover);
-    transform: translateX(5px);
-    border-color: var(--primary-color);
-}
+        /* --- Timeline Items --- */
+        .timeline-item {
+            margin-bottom: 1rem;
+            padding: 1.2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, background 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
 
-.item-logo {
-    flex: 0 0 64px;
-    height: 64px;
-    background: var(--logo-bg);
-    border-radius: 10px;
-    padding: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--border-color);
-}
+        .timeline-item:hover {
+            background: var(--card-hover);
+            transform: translateX(5px);
+            border-color: var(--primary-color);
+        }
 
-.item-logo img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-}
+        .item-logo {
+            flex: 0 0 64px;
+            height: 64px;
+            background: var(--logo-bg);
+            border-radius: 10px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border-color);
+        }
 
-.item-content {
-    flex: 1;
-}
+        .item-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
 
-.item-year {
-    color: var(--primary-color);
-    font-weight: 700;
-    font-size: 0.85rem;
-    margin-bottom: 0.2rem;
-    font-family: 'Space Mono', monospace;
-}
+        .item-content {
+            flex: 1;
+        }
 
-.item-title {
-    color: var(--text-main);
-    font-size: 1.1rem;
-    font-weight: 600;
-    margin-bottom: 0.2rem;
-}
+        .item-year {
+            color: var(--primary-color);
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 0.2rem;
+            font-family: 'Space Mono', monospace;
+        }
 
-.item-subtitle {
-    color: var(--secondary-color);
-    font-size: 0.95rem;
-    font-weight: 300;
-}
+        .item-title {
+            color: var(--text-main);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.2rem;
+        }
 
-.item-desc {
-    margin-top: 0.4rem;
-    font-size: 0.9rem;
-    color: var(--text-sub);
-    font-style: italic;
-    font-family: 'Inter', sans-serif;
-}
+        .item-subtitle {
+            color: var(--secondary-color);
+            font-size: 0.95rem;
+            font-weight: 300;
+        }
 
-/* --- Publications --- */
-.papers-section {
-    margin-top: 3.5rem;
-}
+        .item-desc {
+            margin-top: 0.4rem;
+            font-size: 0.9rem;
+            color: var(--text-sub);
+            font-style: italic;
+            font-family: 'Inter', sans-serif;
+        }
 
-.paper {
-    background: var(--card-bg);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    transition: all 0.3s ease;
-    display: flex; 
-    gap: 1.5rem;
-    align-items: flex-start;
-}
+        /* --- Publications --- */
+        .papers-section {
+            margin-top: 3.5rem;
+        }
 
-.paper:hover {
-    background: var(--card-hover);
-    border-color: var(--primary-color);
-    box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-}
+        .paper {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
 
-.paper-content {
-    flex: 1; 
-}
+        .paper:hover {
+            background: var(--card-hover);
+            border-color: var(--primary-color);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
 
-.paper-title {
-    font-family: 'Poppins', sans-serif;
-    color: var(--text-main);
-    font-size: 1.25rem;
-    margin-bottom: 0.6rem;
-    font-weight: 600;
-    line-height: 1.4;
-}
+        .paper-content {
+            flex: 1;
+        }
 
-.paper-authors {
-    font-family: 'Inter', sans-serif;
-    color: var(--text-author);
-    font-size: 0.95rem;
-    margin-bottom: 0.4rem;
-    line-height: 1.6;
-}
+        .paper-title {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-main);
+            font-size: 1.25rem;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+            line-height: 1.4;
+        }
 
-.paper-authors strong {
-    color: var(--primary-color);
-    font-weight: 600;
-}
+        .paper-authors {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-author);
+            font-size: 0.95rem;
+            margin-bottom: 0.4rem;
+            line-height: 1.6;
+        }
 
-.co-author-note {
-    font-size: 0.8rem;
-    color: var(--text-muted);
-    margin-bottom: 0.8rem;
-    font-family: 'Space Mono', monospace;
-}
+        .paper-authors strong {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
 
-.badges-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 0.8rem;
-    align-items: center;
-}
+        .co-author-note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.8rem;
+            font-family: 'Space Mono', monospace;
+        }
 
-/* Enhanced style for Nature journals */
-.venue-badge-highlight {
-    display: inline-block;
-    padding: 0.25rem 0.8rem;
-    background: var(--highlight-badge-bg);
-    color: var(--highlight-badge-text);
-    font-size: 0.85rem;
-    font-family: 'Space Mono', monospace;
-    border-radius: 4px;
-    border: 1px solid var(--primary-color);
-    font-weight: 700;
-    text-shadow: 0 0 8px rgba(102, 255, 255, 0.2);
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+        .badges-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 0.8rem;
+            align-items: center;
+        }
 
-.venue-badge {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    background: var(--badge-bg);
-    color: var(--primary-color);
-    font-size: 0.8rem;
-    font-family: 'Space Mono', monospace;
-    border-radius: 4px;
-    border: 1px solid var(--border-color);
-}
+        /* Enhanced style for Nature journals */
+        .venue-badge-highlight {
+            display: inline-block;
+            padding: 0.25rem 0.8rem;
+            background: var(--highlight-badge-bg);
+            color: var(--highlight-badge-text);
+            font-size: 0.85rem;
+            font-family: 'Space Mono', monospace;
+            border-radius: 4px;
+            border: 1px solid var(--primary-color);
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(102, 255, 255, 0.2);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
 
-/* Super highlighted Cover Article Badge */
-.cover-badge {
-    display: inline-flex;
-    align-items: center;
-    padding: 0.35rem 0.9rem;
-    background: rgba(255, 215, 0, 0.15);
-    color: var(--gold-color);
-    font-size: 0.85rem;
-    font-family: 'Space Mono', monospace;
-    border-radius: 4px;
-    border: 1px solid var(--gold-color);
-    font-weight: 800;
-    text-decoration: none;
-    box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
-    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    cursor: pointer;
-}
+        .venue-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            background: var(--badge-bg);
+            color: var(--primary-color);
+            font-size: 0.8rem;
+            font-family: 'Space Mono', monospace;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
 
-.cover-badge i {
-    margin-right: 0.4rem;
-}
+        /* Super highlighted Cover Article Badge */
+        .cover-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.35rem 0.9rem;
+            background: rgba(255, 215, 0, 0.15);
+            color: var(--gold-color);
+            font-size: 0.85rem;
+            font-family: 'Space Mono', monospace;
+            border-radius: 4px;
+            border: 1px solid var(--gold-color);
+            font-weight: 800;
+            text-decoration: none;
+            box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+        }
 
-.cover-badge:hover {
-    background: var(--gold-color);
-    color: #fff;
-    transform: translateY(-2px) scale(1.02);
-    box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-    border-color: var(--gold-color);
-}
+        .cover-badge i {
+            margin-right: 0.4rem;
+        }
 
-.paper-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin-top: 0.5rem;
-}
+        .cover-badge:hover {
+            background: var(--gold-color);
+            color: #fff;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+            border-color: var(--gold-color);
+        }
 
-.paper-link {
-    color: var(--secondary-color);
-    text-decoration: none;
-    font-size: 0.85rem;
-    font-family: 'Space Mono', monospace;
-    opacity: 0.8;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-}
+        .paper-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
 
-.paper-link i {
-    margin-right: 0.4rem;
-}
+        .paper-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-family: 'Space Mono', monospace;
+            opacity: 0.8;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+        }
 
-.paper-link:hover {
-    opacity: 1;
-    color: var(--primary-color);
-}
+        .paper-link i {
+            margin-right: 0.4rem;
+        }
 
-/* --- Project Thumbnails --- */
-.paper-image {
-    flex: 0 0 180px; 
-    height: 110px;
-    border-radius: 8px;
-    overflow: hidden;
-    background: rgba(0,0,0,0.1);
-    border: 1px solid var(--border-color);
-    position: relative;
-}
+        .paper-link:hover {
+            opacity: 1;
+            color: var(--primary-color);
+        }
 
-.paper-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.5s ease;
-}
+        /* --- Project Thumbnails --- */
+        .paper-image {
+            flex: 0 0 180px;
+            height: 110px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
 
-.paper:hover .paper-image img {
-    transform: scale(1.05);
-}
+        .paper-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
 
-/* --- Canvas --- */
-canvas {
-    /* No default opacity, controlled by JS draw */
-    display: block;
-}
+        .paper:hover .paper-image img {
+            transform: scale(1.05);
+        }
 
-/* --- Mobile Responsive --- */
-@media (max-width: 768px) {
-    .profile-section {
-        padding: 1.5rem;
-    }
-    
-    .name {
-        font-size: 2.2rem;
-    }
+        /* --- Canvas --- */
+        canvas {
+            /* No default opacity, controlled by JS draw */
+            display: block;
+        }
 
-    .paper {
-        flex-direction: column;
-    }
-
-    .paper-image {
-        width: 100%; 
-        flex: none;
-        height: 160px;
-        margin-top: 1rem;
-    }
-
-    .timeline-item {
-        flex-direction: row; 
-        align-items: flex-start;
-    }
-    
-    .item-logo {
-        flex: 0 0 50px;
-        height: 50px;
-        margin-top: 5px;
-    }
-    
-    .theme-toggle {
-        top: 1rem;
-        right: 1rem;
-    }
-}
-</style>
+        /* --- Mobile Responsive --- */
+        @media (max-width: 768px) {
+            .profile-section {
+                padding: 1.5rem;
+            }
+            .name {
+                font-size: 2.2rem;
+            }
+            .paper {
+                flex-direction: column;
+            }
+            .paper-image {
+                width: 100%;
+                flex: none;
+                height: 160px;
+                margin-top: 1rem;
+            }
+            .timeline-item {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+            .item-logo {
+                flex: 0 0 50px;
+                height: 50px;
+                margin-top: 5px;
+            }
+            .theme-toggle {
+                top: 1rem;
+                right: 1rem;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -492,12 +494,12 @@ canvas {
         <div class="matrix-bg">
             <canvas id="matrix"></canvas>
         </div>
-        
+
         <!-- Theme Toggle Button -->
         <button class="theme-toggle" id="theme-btn" aria-label="Toggle Dark/Light Mode">
             <i class="fas fa-moon"></i>
         </button>
-        
+
         <div class="profile-section">
             <div class="name">Kai Ruan</div>
             <div class="title">Ph.D. Student at Gaoling School of Artificial Intelligence, RUC</div>
@@ -517,10 +519,15 @@ canvas {
                 </a>
             </div>
 
+            <!-- INSERTED MUSIC PLAYER START -->
+            <div class="music-section">
+                <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=2612161115&auto=1&height=66"></iframe>
+            </div>
+            <!-- INSERTED MUSIC PLAYER END -->
+
             <!-- EXPERIENCE SECTION (First) -->
             <div class="section">
                 <h2>Experience</h2>
-                
                 <div class="timeline-item">
                     <div class="item-logo">
                         <img src="https://x66ccff.github.io/images/logos/bytedance.png" alt="ByteDance Logo" onerror="this.style.display='none'">
@@ -532,7 +539,6 @@ canvas {
                         <div class="item-desc">Multimodal LLM Reinforcement Learning</div>
                     </div>
                 </div>
-
                 <div class="timeline-item">
                     <div class="item-logo">
                         <img src="https://x66ccff.github.io/images/logos/modelbest.png" alt="OpenBMB Logo" onerror="this.style.display='none'">
@@ -549,7 +555,6 @@ canvas {
             <!-- EDUCATION SECTION (Second) -->
             <div class="section">
                 <h2>Education</h2>
-                
                 <div class="timeline-item">
                     <div class="item-logo">
                         <img src="https://x66ccff.github.io/images/logos/ruc.png" alt="RUC Logo" onerror="this.style.display='none'">
@@ -560,7 +565,6 @@ canvas {
                         <div class="item-subtitle">Gaoling School of Artificial Intelligence, Renmin University of China</div>
                     </div>
                 </div>
-                
                 <div class="timeline-item">
                     <div class="item-logo">
                         <img src="https://x66ccff.github.io/images/logos/xidian.png" alt="Xidian Logo" onerror="this.style.display='none'">
@@ -710,129 +714,124 @@ canvas {
                         <img src="https://x66ccff.github.io/images/thumbnails/paper-xmogen.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
                     </div>
                 </div>
-
             </div>
         </div>
     </div>
 
-<script>
-// --- Matrix Rain Effect ---
-const canvas = document.getElementById('matrix');
-const ctx = canvas.getContext('2d');
+    <script>
+        // --- Matrix Rain Effect ---
+        const canvas = document.getElementById('matrix');
+        const ctx = canvas.getContext('2d');
+        
+        ctx.imageSmoothingEnabled = false;
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
 
-ctx.imageSmoothingEnabled = false;
+        const letters = '0123456789ABCDEF';
+        const fontSize = 14;
+        const columns = canvas.width / fontSize;
 
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
+        const drops = Array(Math.floor(columns)).fill(0).map(() => Math.floor(Math.random() * canvas.height/fontSize) );
 
-const letters = '0123456789ABCDEF';
-const fontSize = 14;
-const columns = canvas.width / fontSize;
+        // Track current theme state in JS
+        let isLightMode = false;
 
-const drops = Array(Math.floor(columns)).fill(0).map(() => 
-    Math.floor(Math.random() * canvas.height/fontSize)
-);
+        function draw() {
+            if (isLightMode) {
+                // --- LIGHT MODE RENDERING ---
+                // Background: Light Gray-Blue with opacity to create trail
+                ctx.fillStyle = 'rgba(240, 244, 248, 0.1)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-// Track current theme state in JS
-let isLightMode = false;
+                // Text: Specified #66ccff
+                ctx.fillStyle = '#66ccff';
+                ctx.font = `${fontSize}px monospace`;
 
-function draw() {
-    if (isLightMode) {
-        // --- LIGHT MODE RENDERING ---
-        // Background: Light Gray-Blue with opacity to create trail
-        ctx.fillStyle = 'rgba(240, 244, 248, 0.1)'; 
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+                for (let i = 0; i < drops.length; i++) {
+                    const text = letters[Math.floor(Math.random() * letters.length)];
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-        // Text: Specified #66ccff
-        ctx.fillStyle = '#66ccff'; 
-        ctx.font = `${fontSize}px monospace`;
-
-        for (let i = 0; i < drops.length; i++) {
-            const text = letters[Math.floor(Math.random() * letters.length)];
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0;
-            }
-            drops[i]++;
-        }
-
-    } else {
-        // --- DARK MODE RENDERING (Original) ---
-        // Background: Dark Blue
-        ctx.fillStyle = 'rgba(30, 66, 135, 0.05)';
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-        for (let i = 0; i < drops.length; i++) {
-            const text = letters[Math.floor(Math.random() * letters.length)];
-            
-            // Color variations for depth
-            if (drops[i] <= 1) {
-                ctx.fillStyle = '#ffffff'; // Leading character white
-            } else if (drops[i] <= 4) {
-                ctx.fillStyle = '#99ddff'; // Head trail light blue
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
             } else {
-                ctx.fillStyle = '#66ccff'; // Main trail cyan
-            }
-            
-            ctx.font = `${fontSize}px monospace`;
-            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+                // --- DARK MODE RENDERING (Original) ---
+                // Background: Dark Blue
+                ctx.fillStyle = 'rgba(30, 66, 135, 0.05)';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                drops[i] = 0;
+                for (let i = 0; i < drops.length; i++) {
+                    const text = letters[Math.floor(Math.random() * letters.length)];
+                    
+                    // Color variations for depth
+                    if (drops[i] <= 1) {
+                        ctx.fillStyle = '#ffffff'; // Leading character white
+                    } else if (drops[i] <= 4) {
+                        ctx.fillStyle = '#99ddff'; // Head trail light blue
+                    } else {
+                        ctx.fillStyle = '#66ccff'; // Main trail cyan
+                    }
+
+                    ctx.font = `${fontSize}px monospace`;
+                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                        drops[i] = 0;
+                    }
+                    drops[i]++;
+                }
             }
-            drops[i]++;
         }
-    }
-}
 
-let interval = setInterval(draw, 33);
+        let interval = setInterval(draw, 33);
 
-window.addEventListener('resize', () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    ctx.imageSmoothingEnabled = false;
-    drops.length = Math.floor(canvas.width / fontSize);
-    for(let i = 0; i < drops.length; i++) {
-        drops[i] = Math.floor(Math.random() * canvas.height/fontSize);
-    }
-});
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            ctx.imageSmoothingEnabled = false;
+            drops.length = Math.floor(canvas.width / fontSize);
+            for(let i = 0; i < drops.length; i++) {
+                drops[i] = Math.floor(Math.random() * canvas.height/fontSize);
+            }
+        });
 
-// --- Theme Toggle Logic ---
-const themeBtn = document.getElementById('theme-btn');
-const icon = themeBtn.querySelector('i');
-const html = document.documentElement;
+        // --- Theme Toggle Logic ---
+        const themeBtn = document.getElementById('theme-btn');
+        const icon = themeBtn.querySelector('i');
+        const html = document.documentElement;
 
-function setTheme(theme) {
-    if (theme === 'light') {
-        html.setAttribute('data-theme', 'light');
-        icon.className = 'fas fa-sun';
-        localStorage.setItem('theme', 'light');
-        isLightMode = true; // Update JS flag
-    } else {
-        html.removeAttribute('data-theme');
-        icon.className = 'fas fa-moon';
-        localStorage.setItem('theme', 'dark');
-        isLightMode = false; // Update JS flag
-    }
-}
+        function setTheme(theme) {
+            if (theme === 'light') {
+                html.setAttribute('data-theme', 'light');
+                icon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'light');
+                isLightMode = true; // Update JS flag
+            } else {
+                html.removeAttribute('data-theme');
+                icon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'dark');
+                isLightMode = false; // Update JS flag
+            }
+        }
 
-// Check local storage or system preference on load
-const savedTheme = localStorage.getItem('theme');
-const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        // Check local storage or system preference on load
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
-if (savedTheme) {
-    setTheme(savedTheme);
-} else {
-    setTheme(systemPrefersDark ? 'dark' : 'light');
-}
+        if (savedTheme) {
+            setTheme(savedTheme);
+        } else {
+            setTheme(systemPrefersDark ? 'dark' : 'light');
+        }
 
-// Toggle button click event
-themeBtn.addEventListener('click', () => {
-    const currentTheme = html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-    setTheme(newTheme);
-});
-</script>
+        // Toggle button click event
+        themeBtn.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            setTheme(newTheme);
+        });
+    </script>
 </body>
 </html>
