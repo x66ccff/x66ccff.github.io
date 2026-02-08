@@ -11,7 +11,6 @@
     --primary-color: #66ffff;
     --secondary-color: #99ddff;
     --gold-color: #ffd700;
-    --hf-blue: #3b82f6; /* Hugging Face Blue */
     --bg-color: #1e4287;
     --glass-bg: rgba(0, 0, 0, 0.5);
     --card-bg: rgba(0, 0, 0, 0.3);
@@ -105,18 +104,6 @@ body {
     background: rgba(102, 255, 255, 0.15);
     transform: translateY(-3px);
     box-shadow: 0 5px 15px rgba(102, 255, 255, 0.15);
-}
-
-/* Special style for Hugging Face buttons */
-.btn-hf {
-    border-color: var(--hf-blue);
-    color: var(--hf-blue);
-    background: rgba(59, 130, 246, 0.05);
-}
-
-.btn-hf:hover {
-    background: rgba(59, 130, 246, 0.15);
-    box-shadow: 0 5px 15px rgba(59, 130, 246, 0.2);
 }
 
 /* --- Section Headers --- */
@@ -276,17 +263,6 @@ h2::before {
     align-items: center;
 }
 
-.venue-badge {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    background: rgba(102, 255, 255, 0.1);
-    color: var(--primary-color);
-    font-size: 0.8rem;
-    font-family: 'Space Mono', monospace;
-    border-radius: 4px;
-    border: 1px solid rgba(102, 255, 255, 0.3);
-}
-
 /* Enhanced style for Nature journals */
 .venue-badge-highlight {
     display: inline-block;
@@ -300,6 +276,17 @@ h2::before {
     font-weight: 700;
     text-shadow: 0 0 8px rgba(102, 255, 255, 0.6);
     box-shadow: 0 0 10px rgba(102, 255, 255, 0.1);
+}
+
+.venue-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: rgba(102, 255, 255, 0.1);
+    color: var(--primary-color);
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    border-radius: 4px;
+    border: 1px solid rgba(102, 255, 255, 0.3);
 }
 
 /* Super highlighted Cover Article Badge */
@@ -339,7 +326,6 @@ h2::before {
     margin-top: 0.5rem;
 }
 
-/* Default Paper Link */
 .paper-link {
     color: var(--secondary-color);
     text-decoration: none;
@@ -358,17 +344,6 @@ h2::before {
 .paper-link:hover {
     opacity: 1;
     color: var(--primary-color);
-}
-
-/* HF Link Blue */
-.paper-link-hf {
-    color: var(--hf-blue);
-    opacity: 0.9;
-}
-.paper-link-hf:hover {
-    color: #60a5fa;
-    opacity: 1;
-    text-shadow: 0 0 8px rgba(59, 130, 246, 0.4);
 }
 
 /* --- Project Thumbnails --- */
@@ -449,7 +424,7 @@ canvas {
                 <a href="https://github.com/x66ccff" class="btn">
                     <i class="fab fa-github"></i> GitHub
                 </a>
-                <a href="https://huggingface.co/6cf" class="btn btn-hf">
+                <a href="https://huggingface.co/6cf" class="btn">
                     <i class="far fa-smile"></i> Hugging Face
                 </a>
                 <a href="mailto:kairuan@ruc.edu.cn" class="btn">
@@ -457,7 +432,7 @@ canvas {
                 </a>
             </div>
 
-            <!-- EXPERIENCE SECTION (Moved to top) -->
+            <!-- EXPERIENCE SECTION (First) -->
             <div class="section">
                 <h2>Experience</h2>
                 
@@ -486,7 +461,7 @@ canvas {
                 </div>
             </div>
 
-            <!-- EDUCATION SECTION -->
+            <!-- EDUCATION SECTION (Second) -->
             <div class="section">
                 <h2>Education</h2>
                 
@@ -564,10 +539,10 @@ canvas {
                             <a href="https://github.com/x66ccff/liveideabench" class="paper-link">
                                 <i class="fab fa-github"></i> Code
                             </a>
-                            <a href="https://huggingface.co/datasets/6cf/liveideabench-v2" class="paper-link paper-link-hf">
+                            <a href="https://huggingface.co/datasets/6cf/liveideabench-v2" class="paper-link">
                                 <i class="far fa-smile"></i> Dataset
                             </a>
-                            <a href="https://huggingface.co/6cf/QwQ-32B-Preview-IdeaWhiz-v1" class="paper-link paper-link-hf">
+                            <a href="https://huggingface.co/6cf/QwQ-32B-Preview-IdeaWhiz-v1" class="paper-link">
                                 <i class="far fa-smile"></i> Model
                             </a>
                         </div>
