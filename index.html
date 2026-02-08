@@ -273,12 +273,27 @@ h2::before {
     border: 1px solid rgba(102, 255, 255, 0.3);
 }
 
+/* Enhanced style for Nature journals */
+.venue-badge-highlight {
+    display: inline-block;
+    padding: 0.25rem 0.8rem;
+    background: rgba(102, 255, 255, 0.15);
+    color: #fff;
+    font-size: 0.85rem;
+    font-family: 'Space Mono', monospace;
+    border-radius: 4px;
+    border: 1px solid var(--primary-color);
+    font-weight: 700;
+    text-shadow: 0 0 8px rgba(102, 255, 255, 0.6);
+    box-shadow: 0 0 10px rgba(102, 255, 255, 0.1);
+}
+
 .cover-badge {
     display: inline-block;
-    padding: 0.2rem 0.6rem;
+    padding: 0.25rem 0.8rem;
     background: rgba(255, 215, 0, 0.15);
     color: var(--gold-color);
-    font-size: 0.8rem;
+    font-size: 0.85rem;
     font-family: 'Space Mono', monospace;
     border-radius: 4px;
     border: 1px solid var(--gold-color);
@@ -390,6 +405,9 @@ canvas {
                 <a href="https://github.com/x66ccff" class="btn">
                     <i class="fab fa-github"></i> GitHub
                 </a>
+                <a href="https://huggingface.co/6cf" class="btn">
+                    <span style="margin-right: 0.6rem; font-size: 1.1rem;">🤗</span> Hugging Face
+                </a>
                 <a href="mailto:kairuan@ruc.edu.cn" class="btn">
                     <i class="fas fa-envelope"></i> Email
                 </a>
@@ -440,12 +458,12 @@ canvas {
 
                 <div class="timeline-item">
                     <div class="item-logo">
-                        <img src="https://x66ccff.github.io/images/logos/modelbest.png" alt="ModelBest Logo" onerror="this.style.display='none'">
+                        <img src="https://x66ccff.github.io/images/logos/modelbest.png" alt="OpenBMB Logo" onerror="this.style.display='none'">
                     </div>
                     <div class="item-content">
                         <div class="item-year">2025</div>
                         <div class="item-title">Research Intern</div>
-                        <div class="item-subtitle">ModelBest (面壁智能)</div>
+                        <div class="item-subtitle">OpenBMB</div>
                         <div class="item-desc">Topic: Multimodal LLM Reinforcement Learning</div>
                     </div>
                 </div>
@@ -460,7 +478,7 @@ canvas {
                     <div class="paper-content">
                         <div class="paper-title">Discovering physical laws with parallel symbolic enumeration</div>
                         <div class="badges-container">
-                            <div class="venue-badge">Nature Computational Science</div>
+                            <div class="venue-badge-highlight">Nature Computational Science</div>
                             <div class="cover-badge"><i class="fas fa-star"></i> Cover Article (Vol 6, Issue 1)</div>
                         </div>
                         <div class="paper-authors">
@@ -483,12 +501,12 @@ canvas {
                     </div>
                 </div>
 
-                <!-- Paper 2: Nature Comms -->
+                <!-- Paper 2: Nature Comms (LiveIdeaBench) -->
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">Evaluating LLMs' Scientific Creativity and Idea Generation with Minimal Context</div>
                         <div class="badges-container">
-                            <div class="venue-badge">Nature Communications (In Publish)</div>
+                            <div class="venue-badge-highlight">Nature Communications (In Publish)</div>
                         </div>
                         <div class="paper-authors">
                             <strong>Kai Ruan</strong>, Xuan Wang, Jixiang Hong, Hao Sun
@@ -499,6 +517,12 @@ canvas {
                             </a>
                             <a href="https://github.com/x66ccff/liveideabench" class="paper-link">
                                 <i class="fab fa-github"></i> Code
+                            </a>
+                            <a href="https://huggingface.co/datasets/6cf/liveideabench-v2" class="paper-link">
+                                <span style="margin-right: 0.4rem;">🤗</span> Dataset
+                            </a>
+                            <a href="https://huggingface.co/6cf/QwQ-32B-Preview-IdeaWhiz-v1" class="paper-link">
+                                <span style="margin-right: 0.4rem;">🤗</span> Model
                             </a>
                         </div>
                     </div>
