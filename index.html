@@ -10,6 +10,7 @@
 :root {
     --primary-color: #66ffff;
     --secondary-color: #99ddff;
+    --gold-color: #ffd700;
     --bg-color: #1e4287;
     --glass-bg: rgba(0, 0, 0, 0.5);
     --card-bg: rgba(0, 0, 0, 0.3);
@@ -163,7 +164,7 @@ h2::before {
     font-weight: 300;
 }
 
-/* --- Publications (Redesigned) --- */
+/* --- Publications --- */
 .papers-section {
     margin-top: 3.5rem;
 }
@@ -175,7 +176,7 @@ h2::before {
     border-radius: 12px;
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
-    display: flex; /* Flexbox layout for Side-by-Side */
+    display: flex; 
     gap: 1.5rem;
     align-items: flex-start;
 }
@@ -187,7 +188,7 @@ h2::before {
 }
 
 .paper-content {
-    flex: 1; /* Takes remaining space */
+    flex: 1; 
 }
 
 .paper-title {
@@ -203,13 +204,27 @@ h2::before {
     font-family: 'Inter', sans-serif;
     color: #b3e0ff;
     font-size: 0.95rem;
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.4rem;
     line-height: 1.6;
 }
 
 .paper-authors strong {
     color: var(--primary-color);
     font-weight: 600;
+}
+
+.co-author-note {
+    font-size: 0.8rem;
+    color: rgba(153, 221, 255, 0.6);
+    margin-bottom: 0.8rem;
+    font-family: 'Space Mono', monospace;
+}
+
+.badges-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.8rem;
 }
 
 .venue-badge {
@@ -221,7 +236,18 @@ h2::before {
     font-family: 'Space Mono', monospace;
     border-radius: 4px;
     border: 1px solid rgba(102, 255, 255, 0.3);
-    margin-bottom: 0.8rem;
+}
+
+.cover-badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    background: rgba(255, 215, 0, 0.15);
+    color: var(--gold-color);
+    font-size: 0.8rem;
+    font-family: 'Space Mono', monospace;
+    border-radius: 4px;
+    border: 1px solid var(--gold-color);
+    font-weight: 700;
 }
 
 .paper-links {
@@ -253,7 +279,7 @@ h2::before {
 
 /* --- Project Thumbnails --- */
 .paper-image {
-    flex: 0 0 180px; /* Fixed width for desktop */
+    flex: 0 0 180px; 
     height: 110px;
     border-radius: 8px;
     overflow: hidden;
@@ -289,12 +315,11 @@ canvas {
     }
 
     .paper {
-        flex-direction: column-reverse; /* Stack: Text top (flex-direction reverses order in code usually, but here we want Image under text or Text over image. Let's just stack normally) */
         flex-direction: column;
     }
 
     .paper-image {
-        width: 100%; /* Full width on mobile */
+        width: 100%; 
         flex: none;
         height: 160px;
         margin-top: 1rem;
@@ -310,7 +335,7 @@ canvas {
         
         <div class="profile-section">
             <div class="name">Kai Ruan</div>
-            <div class="title">Ph.D. Student at Renmin University of China</div>
+            <div class="title">Ph.D. Student at Gaoling School of Artificial Intelligence, RUC</div>
             
             <div class="social-links">
                 <a href="https://scholar.google.com/citations?user=tokSmGMAAAAJ" class="btn">
@@ -329,13 +354,13 @@ canvas {
                 <div class="education-item">
                     <div class="education-year">2023 - Present</div>
                     <div class="education-degree">Ph.D. Student</div>
-                    <div class="education-school">Renmin University of China</div>
+                    <div class="education-school">Gaoling School of Artificial Intelligence, Renmin University of China</div>
                 </div>
                 
                 <div class="education-item">
                     <div class="education-year">2019 - 2023</div>
                     <div class="education-degree">B.E. Computer Science</div>
-                    <div class="education-school">Xidian University</div>
+                    <div class="education-school">School of Artificial Intelligence, Xidian University</div>
                 </div>
             </div>
 
@@ -346,7 +371,10 @@ canvas {
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">Discovering physical laws with parallel symbolic enumeration</div>
-                        <div class="venue-badge">Nature Computational Science 2026</div>
+                        <div class="badges-container">
+                            <div class="venue-badge">Nature Computational Science</div>
+                            <div class="cover-badge"><i class="fas fa-star"></i> Cover Article (Vol 6, Issue 1)</div>
+                        </div>
                         <div class="paper-authors">
                             <strong>Kai Ruan</strong>, Yilong Xu, Ze-Feng Gao, Yang Liu, Yike Guo, Ji-Rong Wen, Hao Sun
                         </div>
@@ -354,8 +382,8 @@ canvas {
                             <a href="https://doi.org/10.1038/s43588-025-00904-8" class="paper-link">
                                 <i class="fas fa-external-link-alt"></i> DOI
                             </a>
-                            <a href="#" class="paper-link">
-                                <i class="fas fa-file-pdf"></i> PDF
+                            <a href="https://github.com/intell-sci-comput/PSE" class="paper-link">
+                                <i class="fab fa-github"></i> Code
                             </a>
                         </div>
                     </div>
@@ -364,11 +392,13 @@ canvas {
                     </div>
                 </div>
 
-                <!-- Paper 2: LiveIdeaBench -->
+                <!-- Paper 2: Nature Comms -->
                 <div class="paper">
                     <div class="paper-content">
-                        <div class="paper-title">LiveIdeaBench: Evaluating LLMs' Scientific Creativity and Idea Generation with Minimal Context</div>
-                        <div class="venue-badge">Nature Communications (In Publish)</div>
+                        <div class="paper-title">Evaluating LLMs' Scientific Creativity and Idea Generation with Minimal Context</div>
+                        <div class="badges-container">
+                            <div class="venue-badge">Nature Communications (In Publish)</div>
+                        </div>
                         <div class="paper-authors">
                             <strong>Kai Ruan</strong>, Xuan Wang, Jixiang Hong, Hao Sun
                         </div>
@@ -390,7 +420,9 @@ canvas {
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">Benchmarking LLMs' Swarm Intelligence</div>
-                        <div class="venue-badge">Preprint</div>
+                        <div class="badges-container">
+                            <div class="venue-badge">Preprint</div>
+                        </div>
                         <div class="paper-authors">
                             <strong>Kai Ruan</strong>, Mowen Huang, Ji-Rong Wen, Hao Sun
                         </div>
@@ -412,10 +444,13 @@ canvas {
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">AniMo: Species-Aware Model for Text-Driven Animal Motion Generation</div>
-                        <div class="venue-badge">CVPR (CCF A)</div>
-                        <div class="paper-authors">
-                            X Wang, <strong>K Ruan</strong>, X Zhang, G Wang
+                        <div class="badges-container">
+                            <div class="venue-badge">Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)</div>
                         </div>
+                        <div class="paper-authors">
+                            Xuan Wang*, <strong>Kai Ruan*</strong>, X Zhang, G Wang
+                        </div>
+                        <div class="co-author-note">* Equal Contribution</div>
                         <div class="paper-links">
                             <a href="#" class="paper-link">
                                 <i class="fas fa-file-pdf"></i> PDF
@@ -434,40 +469,24 @@ canvas {
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">X-MoGen: Unified Motion Generation across Humans and Animals</div>
-                        <div class="venue-badge">AAAI</div>
-                        <div class="paper-authors">
-                            X Wang, <strong>K Ruan</strong>, L Qian, Z Guo, C Su, G Wang
+                        <div class="badges-container">
+                            <div class="venue-badge">Proceedings of the AAAI Conference on Artificial Intelligence (AAAI)</div>
                         </div>
+                        <div class="paper-authors">
+                            Xuan Wang*, <strong>Kai Ruan*</strong>, L Qian, Z Guo, C Su, G Wang
+                        </div>
+                        <div class="co-author-note">* Equal Contribution</div>
                         <div class="paper-links">
                             <a href="#" class="paper-link">
                                 <i class="fas fa-file-pdf"></i> PDF
                             </a>
-                        </div>
-                    </div>
-                    <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-xmogen.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
-                    </div>
-                </div>
-
-                <!-- Paper 6: PTS (Kept from original list as it seemed important, remove if unwanted) -->
-                <div class="paper">
-                    <div class="paper-content">
-                        <div class="paper-title">Discovering symbolic expressions with parallelized tree search</div>
-                        <div class="venue-badge">Preprint</div>
-                        <div class="paper-authors">
-                            <strong>Kai Ruan</strong>, Ze-Feng Gao, Yike Guo, Hao Sun, Ji-Rong Wen, Yang Liu
-                        </div>
-                        <div class="paper-links">
-                            <a href="https://arxiv.org/abs/2407.04405" class="paper-link">
-                                <i class="fas fa-archive"></i> arXiv
-                            </a>
-                            <a href="https://github.com/intell-sci-comput/PTS" class="paper-link">
+                            <a href="https://github.com/WandererXX/X-MoGen" class="paper-link">
                                 <i class="fab fa-github"></i> Code
                             </a>
                         </div>
                     </div>
                     <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-pts.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
+                        <img src="https://x66ccff.github.io/images/thumbnails/paper-xmogen.png" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='rgba(102, 255, 255, 0.05)'">
                     </div>
                 </div>
 
