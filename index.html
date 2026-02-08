@@ -113,6 +113,7 @@ h2 {
     font-weight: 600;
     color: #fff;
     margin-bottom: 1.5rem;
+    margin-top: 2.5rem;
     display: flex;
     align-items: center;
 }
@@ -128,40 +129,74 @@ h2::before {
     box-shadow: 0 0 8px var(--primary-color);
 }
 
-/* --- Education --- */
-.education-item {
+/* --- Timeline Items (Education & Experience) --- */
+.timeline-item {
     margin-bottom: 1rem;
     padding: 1.2rem;
     background: var(--card-bg);
-    border-radius: 8px;
-    border-left: 3px solid rgba(102, 255, 255, 0.3);
-    transition: transform 0.3s ease;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    transition: transform 0.3s ease, background 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
-.education-item:hover {
+.timeline-item:hover {
     background: var(--card-hover);
     transform: translateX(5px);
+    border-color: rgba(102, 255, 255, 0.3);
 }
 
-.education-year {
+.item-logo {
+    flex: 0 0 64px;
+    height: 64px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(102, 255, 255, 0.1);
+}
+
+.item-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+.item-content {
+    flex: 1;
+}
+
+.item-year {
     color: var(--primary-color);
     font-weight: 700;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     margin-bottom: 0.2rem;
     font-family: 'Space Mono', monospace;
 }
 
-.education-degree {
+.item-title {
     color: #fff;
     font-size: 1.1rem;
     font-weight: 600;
     margin-bottom: 0.2rem;
 }
 
-.education-school {
+.item-subtitle {
     color: var(--secondary-color);
     font-size: 0.95rem;
     font-weight: 300;
+}
+
+.item-desc {
+    margin-top: 0.4rem;
+    font-size: 0.9rem;
+    color: #ccc;
+    font-style: italic;
+    font-family: 'Inter', sans-serif;
 }
 
 /* --- Publications --- */
@@ -324,6 +359,17 @@ canvas {
         height: 160px;
         margin-top: 1rem;
     }
+
+    .timeline-item {
+        flex-direction: row; 
+        align-items: flex-start;
+    }
+    
+    .item-logo {
+        flex: 0 0 50px;
+        height: 50px;
+        margin-top: 5px;
+    }
 }
 </style>
 </head>
@@ -349,21 +395,63 @@ canvas {
                 </a>
             </div>
 
+            <!-- EDUCATION SECTION -->
             <div class="section">
                 <h2>Education</h2>
-                <div class="education-item">
-                    <div class="education-year">2023 - Present</div>
-                    <div class="education-degree">Ph.D. Student</div>
-                    <div class="education-school">Gaoling School of Artificial Intelligence, Renmin University of China</div>
+                
+                <div class="timeline-item">
+                    <div class="item-logo">
+                        <img src="https://x66ccff.github.io/images/logos/ruc.png" alt="RUC Logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="item-content">
+                        <div class="item-year">2023 - Present</div>
+                        <div class="item-title">Ph.D. Student</div>
+                        <div class="item-subtitle">Gaoling School of Artificial Intelligence, Renmin University of China</div>
+                    </div>
                 </div>
                 
-                <div class="education-item">
-                    <div class="education-year">2019 - 2023</div>
-                    <div class="education-degree">B.E. Computer Science</div>
-                    <div class="education-school">School of Artificial Intelligence, Xidian University</div>
+                <div class="timeline-item">
+                    <div class="item-logo">
+                        <img src="https://x66ccff.github.io/images/logos/xidian.png" alt="Xidian Logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="item-content">
+                        <div class="item-year">2019 - 2023</div>
+                        <div class="item-title">B.E. Computer Science</div>
+                        <div class="item-subtitle">School of Artificial Intelligence, Xidian University</div>
+                    </div>
                 </div>
             </div>
 
+            <!-- EXPERIENCE SECTION -->
+            <div class="section">
+                <h2>Experience</h2>
+                
+                <div class="timeline-item">
+                    <div class="item-logo">
+                        <img src="https://x66ccff.github.io/images/logos/bytedance.png" alt="ByteDance Logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="item-content">
+                        <div class="item-year">2026</div>
+                        <div class="item-title">Research Intern</div>
+                        <div class="item-subtitle">ByteDance</div>
+                        <div class="item-desc">Topic: Multimodal LLM Reinforcement Learning</div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="item-logo">
+                        <img src="https://x66ccff.github.io/images/logos/modelbest.png" alt="ModelBest Logo" onerror="this.style.display='none'">
+                    </div>
+                    <div class="item-content">
+                        <div class="item-year">2025</div>
+                        <div class="item-title">Research Intern</div>
+                        <div class="item-subtitle">ModelBest (面壁智能)</div>
+                        <div class="item-desc">Topic: Multimodal LLM Reinforcement Learning</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PUBLICATIONS SECTION -->
             <div class="papers-section">
                 <h2>Selected Publications</h2>
                 
@@ -381,6 +469,9 @@ canvas {
                         <div class="paper-links">
                             <a href="https://doi.org/10.1038/s43588-025-00904-8" class="paper-link">
                                 <i class="fas fa-external-link-alt"></i> DOI
+                            </a>
+                            <a href="#" class="paper-link">
+                                <i class="fas fa-file-pdf"></i> PDF
                             </a>
                             <a href="https://github.com/intell-sci-comput/PSE" class="paper-link">
                                 <i class="fab fa-github"></i> Code
@@ -452,10 +543,10 @@ canvas {
                         </div>
                         <div class="co-author-note">* Equal Contribution</div>
                         <div class="paper-links">
-                            <a href="#" class="paper-link">
+                            <a href="https://openaccess.thecvf.com/content/CVPR2025/papers/Wang_AniMo_Species-Aware_Model_for_Text-Driven_Animal_Motion_Generation_CVPR_2025_paper.pdf" class="paper-link">
                                 <i class="fas fa-file-pdf"></i> PDF
                             </a>
-                            <a href="#" class="paper-link">
+                            <a href="https://github.com/WandererXX/AniMo" class="paper-link">
                                 <i class="fab fa-github"></i> Code
                             </a>
                         </div>
