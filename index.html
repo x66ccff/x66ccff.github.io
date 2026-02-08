@@ -30,19 +30,16 @@
     --badge-bg: rgba(102, 255, 255, 0.1);
     --highlight-badge-bg: rgba(102, 255, 255, 0.15);
     --highlight-badge-text: #ffffff;
-    
-    --matrix-filter: none;
-    --matrix-opacity: 1;
 }
 
 [data-theme="light"] {
     /* Light Mode */
     --primary-color: #0066cc;
     --secondary-color: #004488;
-    --gold-color: #d4af37; /* Darker gold for white bg */
+    --gold-color: #d4af37;
     --hf-blue: #2563eb;
     
-    --bg-color: #f0f4f8;
+    --bg-color: #f0f4f8; /* Light gray-blue background */
     --text-main: #1a1a1a;
     --text-sub: #555555;
     --text-muted: #666666;
@@ -55,12 +52,8 @@
     
     --logo-bg: rgba(0, 0, 0, 0.03);
     --badge-bg: rgba(0, 102, 204, 0.08);
-    --highlight-badge-bg: var(--primary-color); /* Solid color for contrast */
+    --highlight-badge-bg: var(--primary-color);
     --highlight-badge-text: #ffffff;
-    
-    /* Invert Matrix to create a light tech background without changing JS */
-    --matrix-filter: invert(1) hue-rotate(180deg) opacity(0.15);
-    --matrix-opacity: 0.3;
 }
 
 body {
@@ -86,8 +79,8 @@ body {
     right: 0;
     bottom: 0;
     z-index: -1;
-    filter: var(--matrix-filter);
-    transition: filter 0.5s ease;
+    /* Removed CSS filter, color is now handled by JS */
+    transition: opacity 0.5s ease;
 }
 
 /* Theme Toggle Button */
@@ -123,9 +116,9 @@ body {
     background: var(--glass-bg);
     border-radius: 16px;
     backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.05); /* Keep subtle light border */
+    border: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    transition: background 0.5s ease;
+    transition: background 0.5s ease, border-color 0.5s ease;
 }
 
 [data-theme="light"] .profile-section {
@@ -137,7 +130,7 @@ body {
     font-family: 'Montserrat', sans-serif;
     font-size: 3rem;
     color: var(--primary-color);
-    text-shadow: 0 0 10px rgba(102, 255, 255, 0.2); /* Reduced glow for better light mode */
+    text-shadow: 0 0 10px rgba(102, 255, 255, 0.2);
     margin-bottom: 0.5rem;
     font-weight: 700;
     letter-spacing: -0.02em;
@@ -450,7 +443,8 @@ h2::before {
 
 /* --- Canvas --- */
 canvas {
-    opacity: 0.35;
+    /* No default opacity, controlled by JS draw */
+    display: block;
 }
 
 /* --- Mobile Responsive --- */
@@ -722,7 +716,7 @@ canvas {
     </div>
 
 <script>
-// --- Matrix Rain Effect (Unchanged JS) ---
+// --- Matrix Rain Effect ---
 const canvas = document.getElementById('matrix');
 const ctx = canvas.getContext('2d');
 
@@ -739,29 +733,56 @@ const drops = Array(Math.floor(columns)).fill(0).map(() =>
     Math.floor(Math.random() * canvas.height/fontSize)
 );
 
+// Track current theme state in JS
+let isLightMode = false;
+
 function draw() {
-    // Background clear color is hardcoded in JS, but CSS filter handles the theme inversion
-    ctx.fillStyle = 'rgba(30, 66, 135, 0.05)'; 
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    if (isLightMode) {
+        // --- LIGHT MODE RENDERING ---
+        // Background: Light Gray-Blue with opacity to create trail
+        ctx.fillStyle = 'rgba(240, 244, 248, 0.1)'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    for (let i = 0; i < drops.length; i++) {
-        const text = letters[Math.floor(Math.random() * letters.length)];
-        
-        if (drops[i] <= 1) {
-            ctx.fillStyle = '#ffffff';
-        } else if (drops[i] <= 4) {
-            ctx.fillStyle = '#99ddff';
-        } else {
-            ctx.fillStyle = '#66ccff';
-        }
-        
+        // Text: Specified #66ccff
+        ctx.fillStyle = '#66ccff'; 
         ctx.font = `${fontSize}px monospace`;
-        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
-        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-            drops[i] = 0;
+        for (let i = 0; i < drops.length; i++) {
+            const text = letters[Math.floor(Math.random() * letters.length)];
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
         }
-        drops[i]++;
+
+    } else {
+        // --- DARK MODE RENDERING (Original) ---
+        // Background: Dark Blue
+        ctx.fillStyle = 'rgba(30, 66, 135, 0.05)';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < drops.length; i++) {
+            const text = letters[Math.floor(Math.random() * letters.length)];
+            
+            // Color variations for depth
+            if (drops[i] <= 1) {
+                ctx.fillStyle = '#ffffff'; // Leading character white
+            } else if (drops[i] <= 4) {
+                ctx.fillStyle = '#99ddff'; // Head trail light blue
+            } else {
+                ctx.fillStyle = '#66ccff'; // Main trail cyan
+            }
+            
+            ctx.font = `${fontSize}px monospace`;
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+            if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+                drops[i] = 0;
+            }
+            drops[i]++;
+        }
     }
 }
 
@@ -782,16 +803,17 @@ const themeBtn = document.getElementById('theme-btn');
 const icon = themeBtn.querySelector('i');
 const html = document.documentElement;
 
-// Function to set theme
 function setTheme(theme) {
     if (theme === 'light') {
         html.setAttribute('data-theme', 'light');
         icon.className = 'fas fa-sun';
         localStorage.setItem('theme', 'light');
+        isLightMode = true; // Update JS flag
     } else {
         html.removeAttribute('data-theme');
         icon.className = 'fas fa-moon';
         localStorage.setItem('theme', 'dark');
+        isLightMode = false; // Update JS flag
     }
 }
 
@@ -802,7 +824,6 @@ const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matc
 if (savedTheme) {
     setTheme(savedTheme);
 } else {
-    // Default to system preference
     setTheme(systemPrefersDark ? 'dark' : 'light');
 }
 
