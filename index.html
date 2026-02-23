@@ -885,5 +885,41 @@
             });
         }
     </script>
+
+    <!-- 1. 加载核心库 (路径已根据你的 js 文件夹调整) -->
+    <script src="./js/live2dcubismcore.js"></script>
+    <script src="./js/bundle.js"></script>
+
+    <!-- 2. 定义 Canvas 画布 -->
+    <!-- 
+       修改说明：
+       1. 将 style 中的 left 改为 right，放在右下角，避免遮挡左侧音乐播放器。
+       2. bottom 调整为 0 或负数微调垂直位置。
+       3. 增加了 display: none 默认隐藏，由 JS 控制显示，防止加载闪烁。
+    -->
+    <canvas id="live2d" width="500" height="500" class="live2d" 
+        style="position: fixed; right: -20px; bottom: -20px; z-index: 99999; pointer-events: none; opacity: 1; display: none;">
+    </canvas>
+
+    <!-- 3. 初始化脚本 -->
+    <script type="text/javascript">
+        // 移动端适配：只有屏幕宽度大于 768px 时才加载看板娘
+        if (window.innerWidth > 768) {
+            // 显示画布
+            document.getElementById('live2d').style.display = 'block';
+
+            // 你的资源配置
+            var resourcesPath = 'https://cdn.jsdelivr.net/gh/x66ccff/lty-lv2d-v3@v1.2/'; 
+            var backImageName = ''; 
+            var modelDir = ['Hiyori']; 
+            
+            // 初始化模型
+            initDefine(resourcesPath, backImageName, modelDir); 
+        }
+    </script>
+    
+    <!-- ========================================== -->
+
 </body>
 </html>
+
