@@ -144,25 +144,10 @@
         }
 
         .social-links {
-            margin-bottom: 2rem; /* Reduced slightly to accommodate music player */
+            margin-bottom: 2.5rem;
             display: flex;
             flex-wrap: wrap;
             gap: 1rem;
-        }
-
-        /* --- Music Player Styles --- */
-        .music-section {
-            margin-bottom: 3rem;
-            max-width: 100%;
-            overflow: hidden;
-            border-radius: 8px;
-            display: inline-block; /* Keeps it left aligned like buttons */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        /* Optional: Add a subtle border in dark mode to blend better */
-        [data-theme="dark"] .music-section iframe {
-            opacity: 0.9;
         }
 
         .btn {
@@ -190,6 +175,62 @@
             color: var(--highlight-badge-text);
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* --- Music Drawer Styles --- */
+        .music-drawer-container {
+            position: fixed;
+            bottom: 2rem;
+            left: 0;
+            z-index: 99;
+            display: flex;
+            align-items: center;
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: translateX(0);
+        }
+
+        .music-drawer-container.closed {
+            transform: translateX(-350px); /* Hide the content width */
+        }
+
+        .music-content {
+            background: #ffffff;
+            padding: 10px;
+            border-radius: 0 12px 12px 0;
+            box-shadow: 4px 4px 20px rgba(0,0,0,0.2);
+            width: 350px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-content iframe {
+            border-radius: 6px;
+        }
+
+        .music-toggle {
+            position: absolute;
+            right: -44px;
+            background: #ffffff;
+            color: #1e4287;
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 4px 4px 15px rgba(0,0,0,0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            transition: all 0.3s ease;
+        }
+
+        .music-toggle:hover {
+            color: #3b82f6;
+            width: 48px;
+            right: -48px;
         }
 
         /* --- Section Headers --- */
@@ -349,7 +390,6 @@
             align-items: center;
         }
 
-        /* Enhanced style for Nature journals */
         .venue-badge-highlight {
             display: inline-block;
             padding: 0.25rem 0.8rem;
@@ -375,7 +415,6 @@
             border: 1px solid var(--border-color);
         }
 
-        /* Super highlighted Cover Article Badge */
         .cover-badge {
             display: inline-flex;
             align-items: center;
@@ -456,7 +495,6 @@
 
         /* --- Canvas --- */
         canvas {
-            /* No default opacity, controlled by JS draw */
             display: block;
         }
 
@@ -489,6 +527,10 @@
             .theme-toggle {
                 top: 1rem;
                 right: 1rem;
+            }
+            /* Hide music drawer entirely on mobile */
+            .music-drawer-container {
+                display: none !important;
             }
         }
     </style>
@@ -524,13 +566,7 @@
                 </a>
             </div>
 
-            <!-- INSERTED MUSIC PLAYER START -->
-            <div class="music-section">
-                <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=2612161115&auto=1&height=66"></iframe>
-            </div>
-            <!-- INSERTED MUSIC PLAYER END -->
-
-            <!-- EXPERIENCE SECTION (First) -->
+            <!-- EXPERIENCE SECTION -->
             <div class="section">
                 <h2>Experience</h2>
                 <div class="timeline-item">
@@ -557,7 +593,7 @@
                 </div>
             </div>
 
-            <!-- EDUCATION SECTION (Second) -->
+            <!-- EDUCATION SECTION -->
             <div class="section">
                 <h2>Education</h2>
                 <div class="timeline-item">
@@ -586,7 +622,7 @@
             <div class="papers-section">
                 <h2>Selected Publications</h2>
                 
-                <!-- Paper 1: Nature Comp Sci -->
+                <!-- Paper 1 -->
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">Discovering physical laws with parallel symbolic enumeration</div>
@@ -616,7 +652,7 @@
                     </div>
                 </div>
 
-                <!-- Paper 2: Nature Comms (LiveIdeaBench) -->
+                <!-- Paper 2 -->
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">Evaluating LLMs' Scientific Creativity and Idea Generation with Minimal Context</div>
@@ -646,7 +682,7 @@
                     </div>
                 </div>
 
-                <!-- Paper 3: Swarm Intelligence -->
+                <!-- Paper 3 -->
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">Benchmarking LLMs' Swarm Intelligence</div>
@@ -670,7 +706,7 @@
                     </div>
                 </div>
 
-                <!-- Paper 4: AniMo (CVPR) -->
+                <!-- Paper 4 -->
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">AniMo: Species-Aware Model for Text-Driven Animal Motion Generation</div>
@@ -695,7 +731,7 @@
                     </div>
                 </div>
 
-                <!-- Paper 5: X-MoGen (AAAI) -->
+                <!-- Paper 5 -->
                 <div class="paper">
                     <div class="paper-content">
                         <div class="paper-title">X-MoGen: Unified Motion Generation across Humans and Animals</div>
@@ -723,6 +759,16 @@
         </div>
     </div>
 
+    <!-- Retractable Music Drawer -->
+    <div class="music-drawer-container closed" id="music-drawer">
+        <div class="music-content">
+            <iframe frameborder="no" border="0" marginwidth="0" marginheight="0" width=330 height=86 src="//music.163.com/outchain/player?type=2&id=2612161115&auto=1&height=66"></iframe>
+        </div>
+        <button class="music-toggle" id="music-toggle-btn" aria-label="Toggle Music Player">
+            <i class="fas fa-music"></i>
+        </button>
+    </div>
+
     <script>
         // --- Matrix Rain Effect ---
         const canvas = document.getElementById('matrix');
@@ -738,17 +784,13 @@
 
         const drops = Array(Math.floor(columns)).fill(0).map(() => Math.floor(Math.random() * canvas.height/fontSize) );
 
-        // Track current theme state in JS
         let isLightMode = false;
 
         function draw() {
             if (isLightMode) {
-                // --- LIGHT MODE RENDERING ---
-                // Background: Light Gray-Blue with opacity to create trail
                 ctx.fillStyle = 'rgba(240, 244, 248, 0.1)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-                // Text: Specified #66ccff
                 ctx.fillStyle = '#66ccff';
                 ctx.font = `${fontSize}px monospace`;
 
@@ -762,21 +804,18 @@
                     drops[i]++;
                 }
             } else {
-                // --- DARK MODE RENDERING (Original) ---
-                // Background: Dark Blue
                 ctx.fillStyle = 'rgba(30, 66, 135, 0.05)';
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
 
                 for (let i = 0; i < drops.length; i++) {
                     const text = letters[Math.floor(Math.random() * letters.length)];
                     
-                    // Color variations for depth
                     if (drops[i] <= 1) {
-                        ctx.fillStyle = '#ffffff'; // Leading character white
+                        ctx.fillStyle = '#ffffff';
                     } else if (drops[i] <= 4) {
-                        ctx.fillStyle = '#99ddff'; // Head trail light blue
+                        ctx.fillStyle = '#99ddff';
                     } else {
-                        ctx.fillStyle = '#66ccff'; // Main trail cyan
+                        ctx.fillStyle = '#66ccff';
                     }
 
                     ctx.font = `${fontSize}px monospace`;
@@ -812,16 +851,15 @@
                 html.setAttribute('data-theme', 'light');
                 icon.className = 'fas fa-sun';
                 localStorage.setItem('theme', 'light');
-                isLightMode = true; // Update JS flag
+                isLightMode = true;
             } else {
                 html.removeAttribute('data-theme');
                 icon.className = 'fas fa-moon';
                 localStorage.setItem('theme', 'dark');
-                isLightMode = false; // Update JS flag
+                isLightMode = false;
             }
         }
 
-        // Check local storage or system preference on load
         const savedTheme = localStorage.getItem('theme');
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 
@@ -831,15 +869,21 @@
             setTheme(systemPrefersDark ? 'dark' : 'light');
         }
 
-        // Toggle button click event
         themeBtn.addEventListener('click', () => {
             const currentTheme = html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
             const newTheme = currentTheme === 'light' ? 'dark' : 'light';
             setTheme(newTheme);
         });
+
+        // --- Music Drawer Toggle Logic ---
+        const musicDrawer = document.getElementById('music-drawer');
+        const musicToggleBtn = document.getElementById('music-toggle-btn');
+        
+        if (musicToggleBtn && musicDrawer) {
+            musicToggleBtn.addEventListener('click', () => {
+                musicDrawer.classList.toggle('closed');
+            });
+        }
     </script>
 </body>
 </html>
-
-
-
