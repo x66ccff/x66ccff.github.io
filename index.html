@@ -55,6 +55,17 @@
             --highlight-badge-text: #ffffff;
         }
 
+        /* --- Custom Cursor (小笼包鼠标指针) --- */
+        /* 0 0 表示鼠标点击的生效点在图片的左上角，你可以根据 SVG 的中心点调整，比如 16 16 */
+        body {
+            cursor: url('images/logos/xiaolongbao.png') 0 0, auto;
+        }
+        
+        /* 确保鼠标悬停在按钮和链接上时，依然显示小笼包（或者你可以准备另一个小笼包SVG作为悬停状态） */
+        a, button, .btn, .theme-toggle, .music-toggle, .cover-badge, .paper-link {
+            cursor: url('images/logos/xiaolongbao.png') 0 0, pointer;
+        }
+
         body {
             margin: 0;
             overflow-x: hidden;
@@ -96,7 +107,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -219,7 +229,6 @@
             height: 44px;
             border-radius: 8px 0 0 8px; /* Changed from 0 8px 8px 0 */
             box-shadow: -4px 4px 15px rgba(0,0,0,0.15); /* Adjusted shadow direction */
-            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -429,7 +438,6 @@
             text-decoration: none;
             box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            cursor: pointer;
         }
 
         .cover-badge i {
@@ -891,12 +899,6 @@
     <script src="./js/bundle.js"></script>
 
     <!-- 2. 定义 Canvas 画布 -->
-    <!-- 
-       修改说明：
-       1. 将 style 中的 right 改为 left，放在左下角。
-       2. bottom 调整为更小的负数（如 -80px），将模型整体向下移动，解决悬空问题。
-          如果还是觉得悬空，可以继续把 -80px 改得更小（如 -100px）。
-    -->
     <canvas id="live2d" width="500" height="500" class="live2d" 
         style="position: fixed; left: -80px; bottom: -130px; z-index: 99999; pointer-events: none; opacity: 1; display: none;">
     </canvas>
@@ -922,11 +924,3 @@
 
 </body>
 </html>
-
-
-
-
-
-
-
-
