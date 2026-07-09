@@ -5,539 +5,356 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kai Ruan (阮恺)</title>
-    
+
     <meta name="description" content="Kai Ruan is a Ph.D. student at Gaoling School of Artificial Intelligence, Renmin University of China (RUC).">
-    
+
     <link rel="icon" type="image/svg+xml" href="https://x66ccff.github.io/images/thumbnails/luo_logo.svg">
-        
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&family=Space+Mono:wght@400;700&family=Poppins:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
-        /* --- CSS Variables for Theme Switching --- */
+        /* ============================================================
+           Flat academic style.
+           Two fonts only: Source Serif 4 (body) + IBM Plex Mono (meta).
+           No glassmorphism, no glow, no cards, no matrix rain.
+           ============================================================ */
+
         :root {
-            /* Dark Mode (Default) */
-            --primary-color: #66ffff;
-            --secondary-color: #99ddff;
-            --gold-color: #ffd700;
-            --hf-blue: #3b82f6;
-            --bg-color: #1e4287;
-            --text-main: #ffffff;
-            --text-sub: #cccccc;
-            --text-muted: rgba(153, 221, 255, 0.6);
-            --text-author: #b3e0ff;
-            --glass-bg: rgba(0, 0, 0, 0.5);
-            --card-bg: rgba(0, 0, 0, 0.3);
-            --card-hover: rgba(0, 0, 0, 0.45);
-            --border-color: rgba(102, 255, 255, 0.15);
-            --logo-bg: rgba(255, 255, 255, 0.05);
-            --badge-bg: rgba(102, 255, 255, 0.1);
-            --highlight-badge-bg: rgba(102, 255, 255, 0.15);
-            --highlight-badge-text: #ffffff;
-        }
-
-        [data-theme="light"] {
-            /* Light Mode */
-            --primary-color: #0066cc;
-            --secondary-color: #004488;
-            --gold-color: #d4af37;
-            --hf-blue: #2563eb;
-            --bg-color: #f0f4f8; /* Light gray-blue background */
-            --text-main: #1a1a1a;
+            --bg: #fdfcf9;              /* warm off-white, not pure white */
+            --text: #1a1a1a;
             --text-sub: #555555;
-            --text-muted: #666666;
-            --text-author: #2c5282;
-            --glass-bg: rgba(255, 255, 255, 0.85);
-            --card-bg: rgba(255, 255, 255, 0.6);
-            --card-hover: rgba(255, 255, 255, 0.95);
-            --border-color: rgba(0, 102, 204, 0.15);
-            --logo-bg: rgba(0, 0, 0, 0.03);
-            --badge-bg: rgba(0, 102, 204, 0.08);
-            --highlight-badge-bg: var(--primary-color);
-            --highlight-badge-text: #ffffff;
+            --text-meta: #888888;
+            --link: #17527a;            /* readable dark blue for links */
+            --accent: #66ccff;          /* 天依青, used sparingly */
+            --gold: #a07d1c;
+            --hairline: #e2ded4;
+            --mono: 'IBM Plex Mono', ui-monospace, monospace;
+            --serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
         }
 
-        /* --- Custom Cursor (小笼包鼠标指针) --- */
-        /* 0 0 表示鼠标点击的生效点在图片的左上角，你可以根据 SVG 的中心点调整，比如 16 16 */
+        [data-theme="dark"] {
+            --bg: #14171a;
+            --text: #e6e3dc;
+            --text-sub: #a8a49b;
+            --text-meta: #7a766e;
+            --link: #7fd4ff;
+            --accent: #66ccff;
+            --gold: #d4b44a;
+            --hairline: #2b2f34;
+        }
+
+        /* --- 小笼包鼠标指针 --- */
         body {
             cursor: url('images/logos/xiaolongbao.png') 0 0, auto;
         }
-        
-        /* 确保鼠标悬停在按钮和链接上时，依然显示小笼包（或者你可以准备另一个小笼包SVG作为悬停状态） */
-        a, button, .btn, .theme-toggle, .music-toggle, .cover-badge, .paper-link {
+        a, button, .theme-toggle, .music-toggle {
             cursor: url('images/logos/xiaolongbao_with_tianyi.png') 10 15, pointer;
+        }
+
+        * { box-sizing: border-box; }
+
+        html {
+            font-size: 17px;
         }
 
         body {
             margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--serif);
+            line-height: 1.65;
+            transition: background 0.3s ease, color 0.3s ease;
             overflow-x: hidden;
-            background: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            transition: background 0.5s ease, color 0.5s ease;
         }
 
-        .container {
-            min-height: 100vh;
-            padding: 3rem 1.5rem;
-            position: relative;
-            box-sizing: border-box;
+        .page {
+            max-width: 44rem;
+            margin: 0 auto;
+            padding: 4.5rem 1.5rem 6rem;
         }
 
-        .matrix-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            z-index: -1;
-            transition: opacity 0.5s ease;
+        /* --- Header --- */
+        header {
+            margin-bottom: 3rem;
         }
 
-        /* Theme Toggle Button */
+        h1 {
+            font-size: 2.1rem;
+            font-weight: 700;
+            margin: 0 0 0.2rem;
+            letter-spacing: -0.01em;
+        }
+
+        h1 .cn {
+            font-weight: 400;
+            color: var(--text-sub);
+            font-size: 1.5rem;
+            margin-left: 0.5rem;
+        }
+
+        .affiliation {
+            color: var(--text-sub);
+            margin: 0 0 1.4rem;
+            font-style: italic;
+        }
+
+        .contact {
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--text-meta);
+        }
+
+        .contact a {
+            color: var(--link);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.15s ease;
+        }
+
+        .contact a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        .contact .sep {
+            margin: 0 0.6rem;
+            color: var(--hairline);
+        }
+
+        /* --- Section headers --- */
+        h2 {
+            font-family: var(--mono);
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.18em;
+            color: var(--text-meta);
+            margin: 3rem 0 1.2rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--hairline);
+        }
+
+        /* --- Generic links in body --- */
+        a {
+            color: var(--link);
+            text-decoration: none;
+        }
+
+        /* --- CV entries (experience / education) --- */
+        .cv-entry {
+            display: flex;
+            gap: 1.25rem;
+            margin-bottom: 1.1rem;
+            align-items: baseline;
+        }
+
+        .cv-year {
+            flex: 0 0 7.5rem;
+            font-family: var(--mono);
+            font-size: 0.78rem;
+            color: var(--text-meta);
+            padding-top: 0.15rem;
+        }
+
+        .cv-body { flex: 1; }
+
+        .cv-title {
+            font-weight: 600;
+        }
+
+        .cv-title img {
+            height: 1em;
+            width: auto;
+            vertical-align: -0.12em;
+            margin-right: 0.45rem;
+        }
+
+        .cv-place {
+            color: var(--text-sub);
+        }
+
+        .cv-note {
+            color: var(--text-meta);
+            font-style: italic;
+            font-size: 0.92rem;
+        }
+
+        /* --- Publications: reference-list style --- */
+        .pub {
+            margin-bottom: 1.8rem;
+            padding-left: 1.1rem;
+            border-left: 2px solid var(--hairline);
+            transition: border-color 0.2s ease;
+        }
+
+        .pub:hover {
+            border-left-color: var(--accent);
+        }
+
+        .pub-title {
+            font-weight: 600;
+            font-size: 1.02rem;
+            margin-bottom: 0.1rem;
+        }
+
+        .pub-authors {
+            color: var(--text-sub);
+            font-size: 0.92rem;
+        }
+
+        .pub-authors strong {
+            color: var(--text);
+            font-weight: 600;
+        }
+
+        .pub-venue {
+            font-style: italic;
+            font-size: 0.92rem;
+            color: var(--text-sub);
+        }
+
+        .pub-venue .highlight {
+            font-style: italic;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .pub-cover {
+            font-style: normal;
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--gold);
+            border-bottom: 1px dotted var(--gold);
+        }
+
+        .pub-cover:hover {
+            border-bottom-style: solid;
+        }
+
+        .pub-note {
+            font-family: var(--mono);
+            font-size: 0.72rem;
+            color: var(--text-meta);
+        }
+
+        .pub-links {
+            font-family: var(--mono);
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+
+        .pub-links a {
+            color: var(--link);
+            margin-right: 1rem;
+            border-bottom: 1px solid transparent;
+        }
+
+        .pub-links a:hover {
+            border-bottom-color: var(--accent);
+        }
+
+        .pub-links a::before {
+            content: '[';
+            color: var(--text-meta);
+        }
+
+        .pub-links a::after {
+            content: ']';
+            color: var(--text-meta);
+        }
+
+        /* --- Theme toggle: plain, flat --- */
         .theme-toggle {
             position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
+            top: 1.2rem;
+            right: 1.4rem;
             z-index: 100;
-            background: var(--glass-bg);
-            border: 1px solid var(--border-color);
-            color: var(--primary-color);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            background: none;
+            border: none;
+            color: var(--text-meta);
+            font-size: 1rem;
+            padding: 0.4rem;
+            transition: color 0.2s ease;
         }
 
         .theme-toggle:hover {
-            transform: rotate(15deg) scale(1.1);
-            background: var(--card-hover);
+            color: var(--accent);
         }
 
-        .profile-section {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 2.5rem;
-            background: var(--glass-bg);
-            border-radius: 16px;
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-            transition: background 0.5s ease, border-color 0.5s ease;
+        /* --- Footer --- */
+        footer {
+            margin-top: 4rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--hairline);
+            font-family: var(--mono);
+            font-size: 0.7rem;
+            color: var(--text-meta);
         }
 
-        [data-theme="light"] .profile-section {
-            border-color: rgba(0,0,0,0.05);
-        }
-
-        /* --- Header Section --- */
-        .name {
-            font-family: 'Montserrat', sans-serif;
-            font-size: 3rem;
-            color: var(--primary-color);
-            text-shadow: 0 0 10px rgba(102, 255, 255, 0.2);
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            letter-spacing: -0.02em;
-        }
-
-        .title {
-            font-family: 'Space Mono', monospace;
-            font-size: 1.1rem;
-            color: var(--secondary-color);
-            margin-bottom: 2rem;
-            letter-spacing: 0.02em;
-            opacity: 0.9;
-        }
-
-        .social-links {
-            margin-bottom: 2.5rem;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.6rem 1.2rem;
-            background: var(--logo-bg);
-            border: 1px solid var(--primary-color);
-            border-radius: 6px;
-            color: var(--primary-color);
-            text-decoration: none;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            font-size: 0.9rem;
-            font-family: 'Space Mono', monospace;
-            font-weight: 700;
-        }
-
-        .btn i {
-            margin-right: 0.6rem;
-            font-size: 1rem;
-        }
-
-        .btn:hover {
-            background: var(--highlight-badge-bg);
-            color: var(--highlight-badge-text);
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        /* --- Music Drawer Styles (Modified for Right Side) --- */
+        /* --- Music drawer (flat, right side) --- */
         .music-drawer-container {
             position: fixed;
             bottom: 2rem;
-            right: 0; /* Changed from left: 0 */
+            right: 0;
             z-index: 99;
             display: flex;
             align-items: center;
-            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transition: transform 0.35s ease;
             transform: translateX(0);
         }
 
         .music-drawer-container.closed {
-            transform: translateX(350px); /* Changed from -350px to hide to the right */
+            transform: translateX(350px);
         }
 
         .music-content {
-            background: #ffffff;
-            padding: 10px;
-            border-radius: 12px 0 0 12px; /* Changed from 0 12px 12px 0 */
-            box-shadow: -4px 4px 20px rgba(0,0,0,0.2); /* Adjusted shadow direction */
+            background: var(--bg);
+            border: 1px solid var(--hairline);
+            border-right: none;
+            padding: 8px;
             width: 350px;
-            box-sizing: border-box;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .music-content iframe {
-            border-radius: 6px;
         }
 
         .music-toggle {
             position: absolute;
-            left: -44px; /* Changed from right: -44px */
-            background: #ffffff;
-            color: #1e4287;
-            border: none;
-            width: 44px;
-            height: 44px;
-            border-radius: 8px 0 0 8px; /* Changed from 0 8px 8px 0 */
-            box-shadow: -4px 4px 15px rgba(0,0,0,0.15); /* Adjusted shadow direction */
+            left: -40px;
+            background: var(--bg);
+            color: var(--text-meta);
+            border: 1px solid var(--hairline);
+            border-right: none;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
-            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            transition: color 0.2s ease;
         }
 
         .music-toggle:hover {
-            color: #3b82f6;
-            width: 48px;
-            left: -48px; /* Changed from right: -48px */
+            color: var(--accent);
         }
 
-        /* --- Section Headers --- */
-        h2 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--text-main);
-            margin-bottom: 1.5rem;
-            margin-top: 2.5rem;
-            display: flex;
-            align-items: center;
-        }
+        /* --- Mobile --- */
+        @media (max-width: 640px) {
+            html { font-size: 16px; }
 
-        h2::before {
-            content: '';
-            display: block;
-            width: 6px;
-            height: 24px;
-            background: var(--primary-color);
-            margin-right: 12px;
-            border-radius: 2px;
-            box-shadow: 0 0 8px var(--primary-color);
-        }
-
-        /* --- Timeline Items --- */
-        .timeline-item {
-            margin-bottom: 1rem;
-            padding: 1.2rem;
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            transition: transform 0.3s ease, background 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-        }
-
-        .timeline-item:hover {
-            background: var(--card-hover);
-            transform: translateX(5px);
-            border-color: var(--primary-color);
-        }
-
-        .item-logo {
-            flex: 0 0 64px;
-            height: 64px;
-            background: var(--logo-bg);
-            border-radius: 10px;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border-color);
-        }
-
-        .item-logo img {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-        }
-
-        .item-content {
-            flex: 1;
-        }
-
-        .item-year {
-            color: var(--primary-color);
-            font-weight: 700;
-            font-size: 0.85rem;
-            margin-bottom: 0.2rem;
-            font-family: 'Space Mono', monospace;
-        }
-
-        .item-title {
-            color: var(--text-main);
-            font-size: 1.1rem;
-            font-weight: 600;
-            margin-bottom: 0.2rem;
-        }
-
-        .item-subtitle {
-            color: var(--secondary-color);
-            font-size: 0.95rem;
-            font-weight: 300;
-        }
-
-        .item-desc {
-            margin-top: 0.4rem;
-            font-size: 0.9rem;
-            color: var(--text-sub);
-            font-style: italic;
-            font-family: 'Inter', sans-serif;
-        }
-
-        /* --- Publications --- */
-        .papers-section {
-            margin-top: 3.5rem;
-        }
-
-        .paper {
-            background: var(--card-bg);
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            transition: all 0.3s ease;
-            display: flex;
-            gap: 1.5rem;
-            align-items: flex-start;
-        }
-
-        .paper:hover {
-            background: var(--card-hover);
-            border-color: var(--primary-color);
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        }
-
-        .paper-content {
-            flex: 1;
-        }
-
-        .paper-title {
-            font-family: 'Poppins', sans-serif;
-            color: var(--text-main);
-            font-size: 1.25rem;
-            margin-bottom: 0.6rem;
-            font-weight: 600;
-            line-height: 1.4;
-        }
-
-        .paper-authors {
-            font-family: 'Inter', sans-serif;
-            color: var(--text-author);
-            font-size: 0.95rem;
-            margin-bottom: 0.4rem;
-            line-height: 1.6;
-        }
-
-        .paper-authors strong {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-
-        .co-author-note {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            margin-bottom: 0.8rem;
-            font-family: 'Space Mono', monospace;
-        }
-
-        .badges-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 0.8rem;
-            align-items: center;
-        }
-
-        .venue-badge-highlight {
-            display: inline-block;
-            padding: 0.25rem 0.8rem;
-            background: var(--highlight-badge-bg);
-            color: var(--highlight-badge-text);
-            font-size: 0.85rem;
-            font-family: 'Space Mono', monospace;
-            border-radius: 4px;
-            border: 1px solid var(--primary-color);
-            font-weight: 700;
-            text-shadow: 0 0 8px rgba(102, 255, 255, 0.2);
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .venue-badge {
-            display: inline-block;
-            padding: 0.2rem 0.6rem;
-            background: var(--badge-bg);
-            color: var(--primary-color);
-            font-size: 0.8rem;
-            font-family: 'Space Mono', monospace;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
-        }
-
-        .cover-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.35rem 0.9rem;
-            background: rgba(255, 215, 0, 0.15);
-            color: var(--gold-color);
-            font-size: 0.85rem;
-            font-family: 'Space Mono', monospace;
-            border-radius: 4px;
-            border: 1px solid var(--gold-color);
-            font-weight: 800;
-            text-decoration: none;
-            box-shadow: 0 0 12px rgba(255, 215, 0, 0.15);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        .cover-badge i {
-            margin-right: 0.4rem;
-        }
-
-        .cover-badge:hover {
-            background: var(--gold-color);
-            color: #fff;
-            transform: translateY(-2px) scale(1.02);
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
-            border-color: var(--gold-color);
-        }
-
-        .paper-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-top: 0.5rem;
-        }
-
-        .paper-link {
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-size: 0.85rem;
-            font-family: 'Space Mono', monospace;
-            opacity: 0.8;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-        }
-
-        .paper-link i {
-            margin-right: 0.4rem;
-        }
-
-        .paper-link:hover {
-            opacity: 1;
-            color: var(--primary-color);
-        }
-
-        /* --- Project nails --- */
-        .paper-image {
-            flex: 0 0 180px;
-            height: 110px;
-            border-radius: 8px;
-            overflow: hidden;
-            background: rgba(0,0,0,0.1);
-            border: 1px solid var(--border-color);
-            position: relative;
-        }
-
-        .paper-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.5s ease;
-        }
-
-        .paper:hover .paper-image img {
-            transform: scale(1.05);
-        }
-
-        /* --- Canvas --- */
-        canvas {
-            display: block;
-        }
-
-        /* --- Mobile Responsive --- */
-        @media (max-width: 768px) {
-            .profile-section {
-                padding: 1.5rem;
+            .page {
+                padding: 3rem 1.25rem 4rem;
             }
-            .name {
-                font-size: 2.2rem;
-            }
-            .paper {
+
+            .cv-entry {
                 flex-direction: column;
+                gap: 0;
             }
-            .paper-image {
-                width: 100%;
+
+            .cv-year {
                 flex: none;
-                height: 160px;
-                margin-top: 1rem;
             }
-            .timeline-item {
-                flex-direction: row;
-                align-items: flex-start;
-            }
-            .item-logo {
-                flex: 0 0 50px;
-                height: 50px;
-                margin-top: 5px;
-            }
-            .theme-toggle {
-                top: 1rem;
-                right: 1rem;
-            }
-            /* Hide music drawer entirely on mobile */
+
             .music-drawer-container {
                 display: none !important;
             }
@@ -545,263 +362,131 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Background Matrix Effect -->
-        <div class="matrix-bg">
-            <canvas id="matrix"></canvas>
-        </div>
 
-        <!-- Theme Toggle Button -->
-        <button class="theme-toggle" id="theme-btn" aria-label="Toggle Dark/Light Mode">
-            <i class="fas fa-moon"></i>
-        </button>
+    <button class="theme-toggle" id="theme-btn" aria-label="Toggle dark/light mode">
+        <i class="fas fa-moon"></i>
+    </button>
 
-        <div class="profile-section">
-            <div class="name">Kai Ruan</div>
-            <div class="title">Ph.D. Student at Gaoling School of Artificial Intelligence, RUC</div>
-            
-            <div class="social-links">
-                <a href="https://scholar.google.com/citations?user=tokSmGMAAAAJ" class="btn">
-                    <i class="fas fa-graduation-cap"></i> Google Scholar
-                </a>
-                <a href="https://github.com/x66ccff" class="btn">
-                    <i class="fab fa-github"></i> GitHub
-                </a>
-                <a href="https://huggingface.co/6cf" class="btn">
-                    <i class="far fa-smile"></i> Hugging Face
-                </a>
-                <a href="mailto:kairuan@ruc.edu.cn" class="btn">
-                    <i class="fas fa-envelope"></i> Email
-                </a>
+    <div class="page">
+
+        <!-- ===== Header ===== -->
+        <header>
+            <h1>Kai Ruan<span class="cn">阮恺</span></h1>
+            <p class="affiliation">Ph.D. student, Gaoling School of Artificial Intelligence, Renmin University of China</p>
+            <div class="contact">
+                <a href="mailto:kairuan@ruc.edu.cn">kairuan@ruc.edu.cn</a><span class="sep">/</span><a href="https://scholar.google.com/citations?user=tokSmGMAAAAJ">Google Scholar</a><span class="sep">/</span><a href="https://github.com/x66ccff">GitHub</a><span class="sep">/</span><a href="https://huggingface.co/6cf">Hugging Face</a>
             </div>
+        </header>
 
-            <!-- EXPERIENCE SECTION -->
-            <div class="section">
-                <h2>Experience</h2>
-                <div class="timeline-item">
-                    <div class="item-logo">
-                        <img src="https://x66ccff.github.io/images/logos/bytedance.png" alt="ByteDance Logo" onerror="this.style.display='none'">
-                    </div>
-                    <div class="item-content">
-                        <div class="item-year">2026</div>
-                        <div class="item-title">Research Intern</div>
-                        <div class="item-subtitle">ByteDance</div>
-                        <div class="item-desc">Multimodal LLM Reinforcement Learning</div>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="item-logo">
-                        <img src="https://x66ccff.github.io/images/logos/modelbest.png" alt="OpenBMB Logo" onerror="this.style.display='none'">
-                    </div>
-                    <div class="item-content">
-                        <div class="item-year">2025</div>
-                        <div class="item-title">Research Intern</div>
-                        <div class="item-subtitle">OpenBMB</div>
-                        <div class="item-desc">Multimodal LLM Reinforcement Learning</div>
-                    </div>
+        <!-- ===== Experience ===== -->
+        <section>
+            <h2>Experience</h2>
+
+            <div class="cv-entry">
+                <div class="cv-year">2026 –</div>
+                <div class="cv-body">
+                    <div class="cv-title"><img src="https://x66ccff.github.io/images/logos/bytedance.png" alt="" onerror="this.style.display='none'">Research Intern, <span class="cv-place">ByteDance</span></div>
+                    <div class="cv-note">Multimodal LLM reinforcement learning</div>
                 </div>
             </div>
 
-            <!-- EDUCATION SECTION -->
-            <div class="section">
-                <h2>Education</h2>
-                <div class="timeline-item">
-                    <div class="item-logo">
-                        <img src="https://x66ccff.github.io/images/logos/ruc.png" alt="RUC Logo" onerror="this.style.display='none'">
-                    </div>
-                    <div class="item-content">
-                        <div class="item-year">2023 - Present</div>
-                        <div class="item-title">Ph.D. Student</div>
-                        <div class="item-subtitle">Gaoling School of Artificial Intelligence, Renmin University of China</div>
-                    </div>
+            <div class="cv-entry">
+                <div class="cv-year">2025</div>
+                <div class="cv-body">
+                    <div class="cv-title"><img src="https://x66ccff.github.io/images/logos/modelbest.png" alt="" onerror="this.style.display='none'">Research Intern, <span class="cv-place">OpenBMB</span></div>
+                    <div class="cv-note">Multimodal LLM reinforcement learning</div>
                 </div>
-                <div class="timeline-item">
-                    <div class="item-logo">
-                        <img src="https://x66ccff.github.io/images/logos/xidian.png" alt="Xidian Logo" onerror="this.style.display='none'">
-                    </div>
-                    <div class="item-content">
-                        <div class="item-year">2019 - 2023</div>
-                        <div class="item-title">B.E. Computer Science</div>
-                        <div class="item-subtitle">School of Artificial Intelligence, Xidian University</div>
-                    </div>
+            </div>
+        </section>
+
+        <!-- ===== Education ===== -->
+        <section>
+            <h2>Education</h2>
+
+            <div class="cv-entry">
+                <div class="cv-year">2023 –</div>
+                <div class="cv-body">
+                    <div class="cv-title"><img src="https://x66ccff.github.io/images/logos/ruc.png" alt="" onerror="this.style.display='none'">Ph.D., Artificial Intelligence</div>
+                    <div class="cv-place">Gaoling School of Artificial Intelligence, Renmin University of China</div>
                 </div>
             </div>
 
-            <!-- PUBLICATIONS SECTION -->
-            <div class="papers-section">
-                <h2>Selected Publications</h2>
-                
-                <!-- Paper 1 -->
-                <div class="paper">
-                    <div class="paper-content">
-                        <div class="paper-title">Discovering physical laws with parallel symbolic enumeration</div>
-                        <div class="badges-container">
-                            <div class="venue-badge-highlight">Nature Computational Science</div>
-                            <a href="https://www.nature.com/natcomputsci/volumes/6/issues/1" class="cover-badge" target="_blank">
-                                <i class="fas fa-star"></i> Cover Article (Vol 6, Issue 1)
-                            </a>
-                        </div>
-                        <div class="paper-authors">
-                            <strong>Kai Ruan</strong>, Yilong Xu, Ze-Feng Gao, Yang Liu, Yike Guo, Ji-Rong Wen, Hao Sun
-                        </div>
-                        <div class="paper-links">
-                            <a href="https://doi.org/10.1038/s43588-025-00904-8" class="paper-link">
-                                <i class="fas fa-external-link-alt"></i> DOI
-                            </a>
-                            <a href="https://www.nature.com/articles/s43588-025-00904-8.pdf" class="paper-link">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </a>
-                            <a href="https://github.com/intell-sci-comput/PSE" class="paper-link">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                    <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-nature-cs.jpg" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
-                    </div>
-                </div>
-
-                <!-- Paper 2 -->
-                <div class="paper">
-                    <div class="paper-content">
-                        <div class="paper-title">Evaluating LLMs' Scientific Creativity and Idea Generation with Minimal Context</div>
-                        <div class="badges-container">
-                            <div class="venue-badge-highlight">Nature Communications</div>
-                        </div>
-                        <div class="paper-authors">
-                            <strong>Kai Ruan</strong>, Xuan Wang, Jixiang Hong, Peng Wang, Yang Liu, Hao Sun
-                        </div>
-                        <div class="paper-links">
-                            <a href="https://www.nature.com/articles/s41467-026-70245-1" class="paper-link">
-                                <i class="fas fa-external-link-alt"></i> DOI
-                            </a>
-                            <a href="https://www.nature.com/articles/s41467-026-70245-1.pdf" class="paper-link">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </a>
-                            <a href="https://github.com/x66ccff/liveideabench" class="paper-link">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                            <a href="https://huggingface.co/datasets/6cf/liveideabench-v2" class="paper-link">
-                                <i class="far fa-smile"></i> Dataset
-                            </a>
-                            <a href="https://huggingface.co/6cf/QwQ-32B-Preview-IdeaWhiz-v1" class="paper-link">
-                                <i class="far fa-smile"></i> Model
-                            </a>
-                        </div>
-                    </div>
-                    <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-liveidea.jpg" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
-                    </div>
-                </div>
-                
-                <!-- Paper: MedXIAOHE (Technical Report with added #2 Paper of the day badge) -->
-                <div class="paper">
-                    <div class="paper-content">
-                        <div class="paper-title">MedXIAOHE: A Comprehensive Recipe for Building Medical MLLMs</div>
-                        <div class="badges-container">
-                            <div class="venue-badge-highlight">Technical Report</div>
-                            <!-- 新增黄色高亮徽章：Number two paper of the day / #2 Paper of the day -->
-                            <a href="https://huggingface.co/papers/2602.12705" class="cover-badge" target="_blank">
-                                <i class="fas fa-trophy"></i> #2 Paper of the day
-                            </a>
-                        </div>
-                        <div class="paper-authors">
-                            ByteDance XiaoHe Medical AI
-                        </div>
-                        <div class="paper-links">
-                            <a href="https://arxiv.org/abs/2602.12705" class="paper-link">
-                                <i class="fas fa-external-link-alt"></i> arXiv
-                            </a>
-                            <a href="https://arxiv.org/pdf/2602.12705" class="paper-link">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </a>
-                        </div>
-                    </div>
-                    <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/medxiaohe.png" alt="MedXIAOHE Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
-                    </div>
-                </div>
-                
-                <!-- Paper 3 -->
-                <div class="paper">
-                    <div class="paper-content">
-                        <div class="paper-title">Benchmarking LLMs' Swarm Intelligence</div>
-                        <div class="badges-container">
-                            <div class="venue-badge">Preprint</div>
-                        </div>
-                        <div class="paper-authors">
-                            <strong>Kai Ruan</strong>, Mowen Huang, Ji-Rong Wen, Hao Sun
-                        </div>
-                        <div class="paper-links">
-                            <a href="https://arxiv.org/abs/2505.04364" class="paper-link">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </a>
-                            <a href="https://github.com/RUC-GSAI/YuLan-SwarmIntell" class="paper-link">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                    <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-swarm.jpg" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
-                    </div>
-                </div>
-
-                <!-- Paper 4 -->
-                <div class="paper">
-                    <div class="paper-content">
-                        <div class="paper-title">AniMo: Species-Aware Model for Text-Driven Animal Motion Generation</div>
-                        <div class="badges-container">
-                            <div class="venue-badge">Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)</div>
-                        </div>
-                        <div class="paper-authors">
-                            Xuan Wang*, <strong>Kai Ruan*</strong>, X Zhang, G Wang
-                        </div>
-                        <div class="co-author-note">* Equal Contribution</div>
-                        <div class="paper-links">
-                            <a href="https://openaccess.thecvf.com/content/CVPR2025/papers/Wang_AniMo_Species-Aware_Model_for_Text-Driven_Animal_Motion_Generation_CVPR_2025_paper.pdf" class="paper-link">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </a>
-                            <a href="https://github.com/WandererXX/AniMo" class="paper-link">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                    <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-animo.jpg" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
-                    </div>
-                </div>
-
-                <!-- Paper 5 -->
-                <div class="paper">
-                    <div class="paper-content">
-                        <div class="paper-title">X-MoGen: Unified Motion Generation across Humans and Animals</div>
-                        <div class="badges-container">
-                            <div class="venue-badge">Proceedings of the AAAI Conference on Artificial Intelligence (AAAI)</div>
-                        </div>
-                        <div class="paper-authors">
-                            Xuan Wang*, <strong>Kai Ruan*</strong>, L Qian, Z Guo, C Su, G Wang
-                        </div>
-                        <div class="co-author-note">* Equal Contribution</div>
-                        <div class="paper-links">
-                            <a href="https://arxiv.org/pdf/2508.05162" class="paper-link">
-                                <i class="fas fa-file-pdf"></i> PDF
-                            </a>
-                            <a href="https://github.com/WandererXX/X-MoGen" class="paper-link">
-                                <i class="fab fa-github"></i> Code
-                            </a>
-                        </div>
-                    </div>
-                    <div class="paper-image">
-                        <img src="https://x66ccff.github.io/images/thumbnails/paper-xmogen.jpg" alt="Project Thumbnail" onerror="this.style.display='none';this.parentNode.style.background='var(--logo-bg)'">
-                    </div>
+            <div class="cv-entry">
+                <div class="cv-year">2019 – 2023</div>
+                <div class="cv-body">
+                    <div class="cv-title"><img src="https://x66ccff.github.io/images/logos/xidian.png" alt="" onerror="this.style.display='none'">B.E., Computer Science</div>
+                    <div class="cv-place">School of Artificial Intelligence, Xidian University</div>
                 </div>
             </div>
-        </div>
+        </section>
+
+        <!-- ===== Publications ===== -->
+        <section>
+            <h2>Selected Publications</h2>
+
+            <div class="pub">
+                <div class="pub-title">Discovering physical laws with parallel symbolic enumeration</div>
+                <div class="pub-authors"><strong>Kai Ruan</strong>, Yilong Xu, Ze-Feng Gao, Yang Liu, Yike Guo, Ji-Rong Wen, Hao Sun</div>
+                <div class="pub-venue"><span class="highlight">Nature Computational Science</span>, 2026 &nbsp;·&nbsp; <a href="https://www.nature.com/natcomputsci/volumes/6/issues/1" class="pub-cover">Cover Article, Vol. 6 Issue 1</a></div>
+                <div class="pub-links">
+                    <a href="https://doi.org/10.1038/s43588-025-00904-8">DOI</a><a href="https://www.nature.com/articles/s43588-025-00904-8.pdf">PDF</a><a href="https://github.com/intell-sci-comput/PSE">Code</a>
+                </div>
+            </div>
+
+            <div class="pub">
+                <div class="pub-title">Evaluating LLMs' scientific creativity and idea generation with minimal context</div>
+                <div class="pub-authors"><strong>Kai Ruan</strong>, Xuan Wang, Jixiang Hong, Peng Wang, Yang Liu, Hao Sun</div>
+                <div class="pub-venue"><span class="highlight">Nature Communications</span>, 2026</div>
+                <div class="pub-links">
+                    <a href="https://www.nature.com/articles/s41467-026-70245-1">DOI</a><a href="https://www.nature.com/articles/s41467-026-70245-1.pdf">PDF</a><a href="https://github.com/x66ccff/liveideabench">Code</a><a href="https://huggingface.co/datasets/6cf/liveideabench-v2">Dataset</a><a href="https://huggingface.co/6cf/QwQ-32B-Preview-IdeaWhiz-v1">Model</a>
+                </div>
+            </div>
+
+            <div class="pub">
+                <div class="pub-title">MedXIAOHE: A comprehensive recipe for building medical MLLMs</div>
+                <div class="pub-authors">ByteDance XiaoHe Medical AI</div>
+                <div class="pub-venue">Technical report, 2026 &nbsp;·&nbsp; <a href="https://huggingface.co/papers/2602.12705" class="pub-cover">#2 Paper of the Day, Hugging Face</a></div>
+                <div class="pub-links">
+                    <a href="https://arxiv.org/abs/2602.12705">arXiv</a><a href="https://arxiv.org/pdf/2602.12705">PDF</a>
+                </div>
+            </div>
+
+            <div class="pub">
+                <div class="pub-title">Benchmarking LLMs' swarm intelligence</div>
+                <div class="pub-authors"><strong>Kai Ruan</strong>, Mowen Huang, Ji-Rong Wen, Hao Sun</div>
+                <div class="pub-venue">Preprint, 2025</div>
+                <div class="pub-links">
+                    <a href="https://arxiv.org/abs/2505.04364">PDF</a><a href="https://github.com/RUC-GSAI/YuLan-SwarmIntell">Code</a>
+                </div>
+            </div>
+
+            <div class="pub">
+                <div class="pub-title">AniMo: Species-aware model for text-driven animal motion generation</div>
+                <div class="pub-authors">Xuan Wang*, <strong>Kai Ruan</strong>*, X Zhang, G Wang &nbsp;<span class="pub-note">(* equal contribution)</span></div>
+                <div class="pub-venue"><span class="highlight">CVPR</span>, 2025</div>
+                <div class="pub-links">
+                    <a href="https://openaccess.thecvf.com/content/CVPR2025/papers/Wang_AniMo_Species-Aware_Model_for_Text-Driven_Animal_Motion_Generation_CVPR_2025_paper.pdf">PDF</a><a href="https://github.com/WandererXX/AniMo">Code</a>
+                </div>
+            </div>
+
+            <div class="pub">
+                <div class="pub-title">X-MoGen: Unified motion generation across humans and animals</div>
+                <div class="pub-authors">Xuan Wang*, <strong>Kai Ruan</strong>*, L Qian, Z Guo, C Su, G Wang &nbsp;<span class="pub-note">(* equal contribution)</span></div>
+                <div class="pub-venue"><span class="highlight">AAAI</span>, 2026</div>
+                <div class="pub-links">
+                    <a href="https://arxiv.org/pdf/2508.05162">PDF</a><a href="https://github.com/WandererXX/X-MoGen">Code</a>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            © 2026 Kai Ruan
+        </footer>
     </div>
 
-    <!-- Retractable Music Drawer (Moved to Right) -->
+    <!-- ===== Music drawer (right side) ===== -->
     <div class="music-drawer-container closed" id="music-drawer">
-        <button class="music-toggle" id="music-toggle-btn" aria-label="Toggle Music Player">
+        <button class="music-toggle" id="music-toggle-btn" aria-label="Toggle music player">
             <i class="fas fa-music"></i>
         </button>
         <div class="music-content">
@@ -810,115 +495,36 @@
     </div>
 
     <script>
-        // --- Matrix Rain Effect ---
-        const canvas = document.getElementById('matrix');
-        const ctx = canvas.getContext('2d');
-        
-        ctx.imageSmoothingEnabled = false;
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        const letters = '0123456789ABCDEF';
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-
-        const drops = Array(Math.floor(columns)).fill(0).map(() => Math.floor(Math.random() * canvas.height/fontSize) );
-
-        let isLightMode = false;
-
-        function draw() {
-            if (isLightMode) {
-                ctx.fillStyle = 'rgba(240, 244, 248, 0.1)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                ctx.fillStyle = '#66ccff';
-                ctx.font = `${fontSize}px monospace`;
-
-                for (let i = 0; i < drops.length; i++) {
-                    const text = letters[Math.floor(Math.random() * letters.length)];
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                        drops[i] = 0;
-                    }
-                    drops[i]++;
-                }
-            } else {
-                ctx.fillStyle = 'rgba(30, 66, 135, 0.05)';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-                for (let i = 0; i < drops.length; i++) {
-                    const text = letters[Math.floor(Math.random() * letters.length)];
-                    
-                    if (drops[i] <= 1) {
-                        ctx.fillStyle = '#ffffff';
-                    } else if (drops[i] <= 4) {
-                        ctx.fillStyle = '#99ddff';
-                    } else {
-                        ctx.fillStyle = '#66ccff';
-                    }
-
-                    ctx.font = `${fontSize}px monospace`;
-                    ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-
-                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                        drops[i] = 0;
-                    }
-                    drops[i]++;
-                }
-            }
-        }
-
-        let interval = setInterval(draw, 33);
-
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            ctx.imageSmoothingEnabled = false;
-            drops.length = Math.floor(canvas.width / fontSize);
-            for(let i = 0; i < drops.length; i++) {
-                drops[i] = Math.floor(Math.random() * canvas.height/fontSize);
-            }
-        });
-
-        // --- Theme Toggle Logic ---
+        // --- Theme toggle ---
         const themeBtn = document.getElementById('theme-btn');
         const icon = themeBtn.querySelector('i');
         const html = document.documentElement;
 
         function setTheme(theme) {
-            if (theme === 'light') {
-                html.setAttribute('data-theme', 'light');
+            if (theme === 'dark') {
+                html.setAttribute('data-theme', 'dark');
                 icon.className = 'fas fa-sun';
-                localStorage.setItem('theme', 'light');
-                isLightMode = true;
             } else {
                 html.removeAttribute('data-theme');
                 icon.className = 'fas fa-moon';
-                localStorage.setItem('theme', 'dark');
-                isLightMode = false;
             }
+            try { localStorage.setItem('theme', theme); } catch (e) {}
         }
 
-        const savedTheme = localStorage.getItem('theme');
+        let savedTheme = null;
+        try { savedTheme = localStorage.getItem('theme'); } catch (e) {}
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-
-        if (savedTheme) {
-            setTheme(savedTheme);
-        } else {
-            setTheme(systemPrefersDark ? 'dark' : 'light');
-        }
+        setTheme(savedTheme || (systemPrefersDark ? 'dark' : 'light'));
 
         themeBtn.addEventListener('click', () => {
-            const currentTheme = html.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            setTheme(newTheme);
+            const isDark = html.getAttribute('data-theme') === 'dark';
+            setTheme(isDark ? 'light' : 'dark');
         });
 
-        // --- Music Drawer Toggle Logic ---
+        // --- Music drawer toggle ---
         const musicDrawer = document.getElementById('music-drawer');
         const musicToggleBtn = document.getElementById('music-toggle-btn');
-        
+
         if (musicToggleBtn && musicDrawer) {
             musicToggleBtn.addEventListener('click', () => {
                 musicDrawer.classList.toggle('closed');
@@ -926,35 +532,26 @@
         }
     </script>
 
-    <!-- 1. 加载核心库 (路径已根据你的 js 文件夹调整) -->
+    <!-- ===== Live2D 看板娘 ===== -->
     <script src="./js/live2dcubismcore.js"></script>
     <script src="./js/bundle.js"></script>
 
-    <!-- 2. 定义 Canvas 画布 -->
-    <canvas id="live2d" width="500" height="500" class="live2d" 
+    <canvas id="live2d" width="500" height="500" class="live2d"
         style="position: fixed; left: -80px; bottom: -130px; z-index: 99999; pointer-events: none; opacity: 1; display: none;">
     </canvas>
 
-    <!-- 3. 初始化脚本 -->
     <script type="text/javascript">
-        // 移动端适配：只有屏幕宽度大于 768px 时才加载看板娘
+        // 移动端不加载看板娘
         if (window.innerWidth > 768) {
-            // 显示画布
             document.getElementById('live2d').style.display = 'block';
 
-            // 你的资源配置
-            var resourcesPath = 'https://cdn.jsdelivr.net/gh/x66ccff/lty-lv2d-v3@v1.2/'; 
-            var backImageName = ''; 
-            var modelDir = ['Hiyori']; 
-            
-            // 初始化模型
-            initDefine(resourcesPath, backImageName, modelDir); 
+            var resourcesPath = 'https://cdn.jsdelivr.net/gh/x66ccff/lty-lv2d-v3@v1.2/';
+            var backImageName = '';
+            var modelDir = ['Hiyori'];
+
+            initDefine(resourcesPath, backImageName, modelDir);
         }
     </script>
-    
-    <!-- ========================================== -->
 
 </body>
 </html>
-
-
