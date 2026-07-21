@@ -26,7 +26,7 @@
             --text-sub: #555555;
             --text-meta: #888888;
             --link: #17527a;            /* readable dark blue for links */
-            --accent: #66ccff;          /* 天依青, used sparingly */
+            --accent: #66ccff;          /* 天依蓝, used sparingly */
             --gold: #a07d1c;
             --hairline: #e2ded4;
             --mono: 'IBM Plex Mono', ui-monospace, monospace;
@@ -44,7 +44,7 @@
             --hairline: #2b2f34;
         }
 
-        /* --- 彩蛋皮肤：天依青 --- */
+        /* --- 彩蛋皮肤：天依蓝 --- */
         [data-theme="tianyi"] {
             --bg: #66ccff;
             --text: #06344d;
@@ -381,7 +381,7 @@
         }
 
         /* ============================================================
-           彩蛋扩散效果：天依青从左下角【匀速】圆形铺开
+           彩蛋扩散效果：天依蓝从左下角【匀速】圆形铺开
            #tianyi-fx 是总容器（负责最后的整体淡出）：
            - #tianyi-overlay：蓝色圆形波前，clip-path 裁剪，linear 匀速
            - 剪影粒子是 fx 的直接子元素，【不】被圆形裁剪：
@@ -445,7 +445,7 @@
 
         /* --- 看板娘说话气泡 ---
            配色全部用主题变量（--bg / --text / --hairline），
-           浅色、深色、天依青三个主题自动适配，和音乐抽屉同一套语言 */
+           浅色、深色、天依蓝三个主题自动适配，和音乐抽屉同一套语言 */
         #live2d-bubble {
             position: fixed;
             left: 105px;
@@ -660,7 +660,7 @@
 
     <script>
         // --- Theme toggle (两态切换: light ↔ dark；
-        //     天依青是隐藏彩蛋，只能由左下角触发) ---
+        //     天依蓝是隐藏彩蛋，只能由左下角触发) ---
         const themeBtn = document.getElementById('theme-btn');
         const html = document.documentElement;
 
@@ -679,7 +679,7 @@
         }
 
         // ============================================================
-        // 彩蛋扩散：天依青圆形波前从左下角【匀速】铺开 + 双层剪影带
+        // 彩蛋扩散：天依蓝圆形波前从左下角【匀速】铺开 + 双层剪影带
         // 流程：
         //   1. 插入 fx 容器，里面放蓝色渐变圆盘（圆心钉在左下角，
         //      scale 0 → 1，7.2s linear 匀速，边缘 16% 羽化）
@@ -691,7 +691,7 @@
         //   4. 一切完成后，fx 容器整体淡出并移除
         // ============================================================
         function triggerTianyiSpread() {
-            // 已经是天依青，或上一轮扩散还没结束，直接跳过
+            // 已经是天依蓝，或上一轮扩散还没结束，直接跳过
             if (html.getAttribute('data-theme') === 'tianyi') return;
             if (document.getElementById('tianyi-fx')) return;
 
@@ -853,7 +853,7 @@
             requestAnimationFrame(drawFrame);
 
             // 换色不等波前铺满：触发后 0.4s 就开始，全站文字颜色用 6s
-            // 缓慢过渡到天依青皮肤，和圆形扩散同步进行。
+            // 缓慢过渡到天依蓝皮肤，和圆形扩散同步进行。
             // 但 body 背景色要先钉住旧值——否则整页立刻变蓝，
             // 圆形扩散的"揭示"效果就没了；等波前快铺满时再放开
             const oldBg = getComputedStyle(document.body).backgroundColor;
@@ -885,7 +885,7 @@
                 // 彩蛋状态下点按钮：退出彩蛋，回到浅色
                 setTheme('light');
             } else {
-                // 普通状态只在浅色 / 深色之间切换，不再能点进天依青
+                // 普通状态只在浅色 / 深色之间切换，不再能点进天依蓝
                 setTheme(current === 'light' ? 'dark' : 'light');
             }
         });
