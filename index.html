@@ -380,6 +380,127 @@
             color: var(--accent);
         }
 
+        /* ============================================================
+           彩蛋扩散效果：天依青从左下角【匀速】圆形铺开
+           #tianyi-fx 是总容器（负责最后的整体淡出）：
+           - #tianyi-overlay：蓝色圆形波前，clip-path 裁剪，linear 匀速
+           - 剪影粒子是 fx 的直接子元素，【不】被圆形裁剪：
+             · 波前之外（还没被蓝色覆盖的页面上）= 天蓝色剪影
+             · 波后（蓝色区域内）= 白色剪影
+           z-index: -1 让整个特效垫在页面内容之下、页面背景之上：
+           扩散全程简历文字保持可读，不会被蓝色或剪影盖住。
+           ============================================================ */
+        #tianyi-fx {
+            position: fixed;
+            inset: 0;
+            z-index: -1;                /* 最底层：内容之下、body 背景之上 */
+            pointer-events: none;
+        }
+
+        #tianyi-fx.fading {
+            transition: opacity 0.8s ease;
+            opacity: 0;
+        }
+
+        #tianyi-overlay {
+            position: absolute;
+            /* 尺寸和位置由 JS 设置：一个圆心钉在左下角的大圆盘 */
+            border-radius: 50%;
+            /* 径向渐变边缘：中心纯蓝，最外 16% 羽化到透明，
+               圆形的生硬边缘变成柔和的渐变过渡 */
+            background: radial-gradient(circle closest-side,
+                #66ccff 84%, rgba(102, 204, 255, 0) 100%);
+            transform: scale(0);
+        }
+
+        #tianyi-overlay.expanding {
+            transition: transform 7.2s linear;   /* 匀速，1/4 速 */
+            transform: scale(1);
+        }
+
+        /* 彩蛋期间：文字/线条颜色缓慢过渡到新皮肤，和圆形扩散
+           同步进行，而不是等波前铺满后才换色。
+           注意：body 背景必须保持快速过渡——它会被 JS 钉住旧值，
+           等波前铺满后才放开，否则整页立刻变蓝、揭示感就没了 */
+        html.egg-anim body {
+            transition: background 1.2s ease, color 6s ease !important;
+        }
+
+        /* 注意排除 #tianyi-fx 子树：圆盘要靠自己的 transform
+           过渡扩散，不能被这条规则顶掉 */
+        html.egg-anim body *:not(#tianyi-fx):not(#tianyi-fx *) {
+            transition: color 6s ease, background-color 6s ease,
+                        border-color 6s ease !important;
+        }
+
+        .tianyi-particle {
+            position: absolute;
+            left: 0;
+            bottom: 0;                /* 全部从左下角原点出发 */
+            pointer-events: none;
+            line-height: 1;
+            will-change: transform, opacity;
+        }
+
+        .tianyi-particle.front {
+            color: #66ccff;           /* 波前：天蓝色剪影，落在浅色页面上 */
+        }
+
+        .tianyi-particle.back {
+            color: #ffffff;           /* 波后：白色剪影，落在天依青上 */
+        }
+
+        .tianyi-particle svg {
+            display: block;
+            width: 1em;
+            height: 1em;
+        }
+
+        /* --- 看板娘说话气泡 ---
+           配色全部用主题变量（--bg / --text / --hairline），
+           浅色、深色、天依青三个主题自动适配，和音乐抽屉同一套语言 */
+        #live2d-bubble {
+            position: fixed;
+            left: 105px;
+            bottom: 235px;
+            max-width: 230px;
+            padding: 0.45rem 0.85rem;
+            background: var(--bg);
+            color: var(--text);
+            border: 1px solid var(--hairline);
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.45;
+            z-index: 100000;            /* 看板娘 99999 之上 */
+            pointer-events: none;
+            opacity: 0;
+            transform: scale(0.6) translateY(10px);
+            transform-origin: left bottom;   /* 从她嘴边"长"出来 */
+            transition: opacity 0.25s ease, transform 0.25s ease,
+                        background 1.2s ease, color 0.6s ease,
+                        border-color 0.6s ease;
+        }
+
+        #live2d-bubble.show {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        /* 气泡小尾巴，指向看板娘 */
+        #live2d-bubble::after {
+            content: '';
+            position: absolute;
+            left: 22px;
+            bottom: -7px;
+            width: 12px;
+            height: 12px;
+            background: var(--bg);
+            border-right: 1px solid var(--hairline);
+            border-bottom: 1px solid var(--hairline);
+            transform: rotate(45deg);
+            transition: background 1.2s ease, border-color 0.6s ease;
+        }
+
         /* --- Mobile --- */
         @media (max-width: 640px) {
             html { font-size: 16px; }
@@ -400,8 +521,14 @@
             .music-drawer-container {
                 display: none !important;
             }
+
+            /* 移动端没有看板娘，也没有气泡 */
+            #live2d-bubble {
+                display: none !important;
+            }
         }
     </style>
+<base target="_blank">
 </head>
 <body>
 
@@ -541,6 +668,9 @@
         </div>
     </div>
 
+    <!-- ===== 看板娘说话气泡（元素需放在主脚本之前） ===== -->
+    <div id="live2d-bubble" aria-live="polite"></div>
+
     <script>
         // --- Theme toggle (三态循环: light → dark → tianyi) ---
         const themeBtn = document.getElementById('theme-btn');
@@ -560,6 +690,165 @@
             try { localStorage.setItem('theme', theme); } catch (e) {}
         }
 
+        // ============================================================
+        // 彩蛋扩散：天依青圆形波前从左下角【匀速】铺开 + 双层剪影带
+        // 流程：
+        //   1. 插入 fx 容器，里面放蓝色覆盖层（clip-path 圆心在左下角、
+        //      半径 0 → 150%，7.2s linear 匀速）
+        //   2. 生成音符/蝴蝶/∞ 剪影粒子，与波前同速同向飞行：
+        //      · front 粒子（天蓝色）：径向始终领先波前一段距离，
+        //        落在还没被覆盖的浅色页面上
+        //      · back 粒子（白色）：径向始终落后波前一段距离，
+        //        落在蓝色区域内
+        //      匀速 + 相同速率 ⇒ 与波前的相对距离全程恒定，严格同步
+        //   3. 波前铺满屏幕后，在蓝色覆盖下无缝切换 data-theme
+        //   4. 底层皮肤过渡完成后，fx 容器整体淡出并移除
+        // ============================================================
+        function triggerTianyiSpread() {
+            // 已经是天依青，或上一轮扩散还没结束，直接跳过
+            if (html.getAttribute('data-theme') === 'tianyi') return;
+            if (document.getElementById('tianyi-fx')) return;
+
+            const fx = document.createElement('div');
+            fx.id = 'tianyi-fx';
+            fx.setAttribute('aria-hidden', 'true');
+
+            const W = window.innerWidth;
+            const H = window.innerHeight;
+            const maxR = Math.hypot(W, H);   // 左下角到最远角落（右上角）的距离
+
+            // 渐变圆盘：半径 GRAD_R，纯色到 84%，最外 16% 羽化。
+            // 羽化中点（≈92%）是"波前沿"的位置，纯色区在 scale(1) 时
+            // 恰好盖住最远的右上角（0.84 × 1.2 ≈ 1.01 × maxR）
+            const GRAD_R = 1.2 * maxR;
+            const FRONT_R = 0.92 * GRAD_R;   // 粒子剪影带的中心半径
+
+            const overlay = document.createElement('div');
+            overlay.id = 'tianyi-overlay';
+            overlay.style.width = (2 * GRAD_R) + 'px';
+            overlay.style.height = (2 * GRAD_R) + 'px';
+            overlay.style.left = (-GRAD_R) + 'px';
+            overlay.style.bottom = (-GRAD_R) + 'px';
+            fx.appendChild(overlay);
+            document.body.appendChild(fx);
+
+            // 剪影素材：音符、无限符号用字符；蝴蝶用内联 SVG 剪影
+            const glyphs = ['♪', '♫', '∞', '∞'];   // ∞ 出现概率高一倍
+            const butterflySVG =
+                '<svg viewBox="0 0 100 100"><path fill="currentColor" d="' +
+                'M50 45 C42 20 10 5 8 25 C6 42 30 48 48 50 ' +
+                'C30 52 12 62 20 80 C26 94 46 80 50 55 ' +
+                'C54 80 74 94 80 80 C88 62 70 52 52 50 ' +
+                'C70 48 94 42 92 25 C90 5 58 20 50 45 Z"/></svg>';
+
+            const COUNT = 1380;              // 粒子密度 ×3
+
+            // ============================================================
+            // 同步的关键：波前沿（羽化中点）半径 R(t) = FRONT_R * t / T（匀速）。
+            // 所有粒子都从左下角原点出发，径向偏移按
+            //     offset(t) = δ * smoothstep(t / t_ramp)
+            // 增长：σ 用 smoothstep 平滑地从 0 升到一个小常数 C 后保持
+            // 不变 —— 出发时大家都挤在原点，很快收成一条【等宽的窄剪影
+            // 带】，峰值始终压在波前弧线上；δ ~ N(0, C²)，截断 ±3C。
+            // δ > 0 的粒子在波前之外 → 天蓝色剪影；δ < 0 在波后 → 白色。
+            // 整条运动曲线用 25 个采样点逼近，没有任何分段折点。
+            // ============================================================
+            const EXPAND_MS = 7200;          // 1/4 速度
+            const SIGMA = FRONT_R * 0.028;   // 常数 C：剪影带的最终标准差（小，等宽）
+            const RAMP = 0.12;               // σ 从 0 升到 C 所用的动画时长比例
+            const STEPS = 24;                // 关键帧采样点数（足够密，肉眼无折点）
+
+            // Box-Muller 标准正态分布采样
+            function randNormal() {
+                let u = 0, v = 0;
+                while (u === 0) u = Math.random();
+                while (v === 0) v = Math.random();
+                return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+            }
+
+            // smoothstep：两端切线水平，没有折点的平滑爬升
+            function smoothstep(x) {
+                x = Math.max(0, Math.min(1, x));
+                return x * x * (3 - 2 * x);
+            }
+
+            for (let i = 0; i < COUNT; i++) {
+                const p = document.createElement('span');
+                // 径向偏移 δ ~ N(0, C²)，截断到 ±3C；
+                // δ 的符号决定粒子在波前（天蓝）还是波后（白）
+                const gauss = Math.max(-3, Math.min(3, randNormal()));
+                const delta = gauss * SIGMA;
+                p.className = 'tianyi-particle ' + (delta >= 0 ? 'front' : 'back');
+                // 约三成是蝴蝶，其余是音符 / ∞
+                p.innerHTML = Math.random() < 0.3
+                    ? butterflySVG
+                    : glyphs[Math.floor(Math.random() * glyphs.length)];
+                p.style.fontSize = (12 + Math.random() * 26) + 'px';
+                p.style.opacity = '0';
+                fx.appendChild(p);
+
+                // 从左下角出发的扇形：0°=水平向右，90°=竖直向上
+                const angle = (2 + Math.random() * 86) * Math.PI / 180;
+                const dirX = Math.cos(angle);
+                const dirY = -Math.sin(angle);   // 屏幕坐标 y 向下，向上取负
+
+                const rot = (Math.random() - 0.5) * 70;
+                // 垂直于飞行方向的小摆动（不改径向分布），飞起来不死板
+                const wob = (Math.random() - 0.5) * SIGMA * 1.5;
+
+                // 沿平滑曲线均匀采样 25 个关键帧：
+                // 半径 = R(t) + δ * smoothstep(t / t_ramp)，全程无折点
+                const frames = [];
+                for (let k = 0; k <= STEPS; k++) {
+                    const f = k / STEPS;
+                    const s = smoothstep(f / RAMP);             // σ 平滑爬升：0 → 1
+                    const r = FRONT_R * f + delta * s;          // 径向位置
+                    const w = wob * Math.sin(f * Math.PI);      // 中段摆动，两头为 0
+                    const x = dirX * r - dirY * w;
+                    const y = dirY * r + dirX * w;
+                    const si = smoothstep(f / 0.05);            // 淡入和缩放也平滑
+                    frames.push({
+                        transform: 'translate(' + x + 'px, ' + y + 'px) scale('
+                            + (0.4 + 0.6 * si) + ') rotate(' + (rot * f) + 'deg)',
+                        opacity: si,
+                        offset: f
+                    });
+                }
+
+                p.animate(frames, {
+                    duration: EXPAND_MS,          // 与波前同寿命
+                    delay: Math.random() * 100,   // 微小错峰，避免过于整齐
+                    easing: 'linear',             // 与圆盘 scale 同为匀速 → 严格同步
+                    fill: 'forwards'
+                });
+            }
+
+            // 强制 reflow，让 scale(0) 初始值生效后再开始过渡
+            void overlay.offsetWidth;
+            overlay.classList.add('expanding');
+
+            // 换色不等波前铺满：触发后 0.4s 就开始，全站文字颜色用 6s
+            // 缓慢过渡到天依青皮肤，和圆形扩散同步进行。
+            // 但 body 背景色要先钉住旧值——否则整页立刻变蓝，
+            // 圆形扩散的"揭示"效果就没了；等波前快铺满时再放开
+            const oldBg = getComputedStyle(document.body).backgroundColor;
+            setTimeout(() => {
+                html.classList.add('egg-anim');
+                document.body.style.backgroundColor = oldBg;   // 钉住背景
+                setTheme('tianyi');
+            }, 400);
+            // 波前铺满后放开背景：在不透明圆盘的遮盖下无缝衔接
+            setTimeout(() => {
+                document.body.style.backgroundColor = '';
+            }, 7150);
+            // 扩散和换色都完成后，整个 fx 层淡出并移除
+            setTimeout(() => fx.classList.add('fading'), 7500);
+            setTimeout(() => {
+                fx.remove();
+                html.classList.remove('egg-anim');
+            }, 8500);
+        }
+
         let savedTheme = null;
         try { savedTheme = localStorage.getItem('theme'); } catch (e) {}
         const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -569,7 +858,12 @@
             const current = html.getAttribute('data-theme') || 'light';
             const next = current === 'light' ? 'dark'
                        : current === 'dark' ? 'tianyi' : 'light';
-            setTheme(next);
+            // 切进天依青也走同一套扩散动画，其它切换保持原样
+            if (next === 'tianyi') {
+                triggerTianyiSpread();
+            } else {
+                setTheme(next);
+            }
         });
 
         // --- Music drawer toggle ---
@@ -582,8 +876,36 @@
             });
         }
 
-        // --- 九宫格左下角停留 5 秒：弹出播放器 + 触发彩蛋皮肤 ---
-        let cornerTimer = null;
+        // ============================================================
+        // 看板娘说话气泡
+        // 点击看板娘，或鼠标在左下角每停留 5 秒，就切换到下一句台词，
+        // 像她在循环说话一样。停止互动约 6 秒后气泡自动收起。
+        // ============================================================
+        const bubble = document.getElementById('live2d-bubble');
+        const bubbleLines = [
+            '好想吃小笼包……',
+            '要来听首歌吗？',
+            '#66CCFF 是我的颜色哦！',
+            '为了你唱下去。',
+        ];
+        let bubbleIdx = -1;
+        let bubbleHideTimer = null;
+
+        function cycleBubble() {
+            if (!bubble) return;
+            bubbleIdx = (bubbleIdx + 1) % bubbleLines.length;
+            bubble.textContent = bubbleLines[bubbleIdx];
+            bubble.classList.add('show');
+            // 每次"说话"都重置收起计时
+            clearTimeout(bubbleHideTimer);
+            bubbleHideTimer = setTimeout(() => {
+                bubble.classList.remove('show');
+            }, 6000);
+        }
+
+        // --- 九宫格左下角：首次停留 5 秒弹出播放器 + 触发彩蛋皮肤；
+        //     之后持续停留，每 5 秒切换一次气泡台词 ---
+        let cornerInterval = null;
 
         document.addEventListener('mousemove', (e) => {
             // 九宫格：横向左 1/3，纵向下 1/3，即左下角那一格
@@ -592,16 +914,21 @@
 
             if (inCorner) {
                 // 已进入左下角区域，如果还没计时就开始计时
-                if (!cornerTimer) {
-                    cornerTimer = setTimeout(() => {
-                        musicDrawer.classList.remove('closed'); // 弹出播放器
-                        setTheme('tianyi');                     // 彩蛋：背景渐变为 66ccff
+                if (!cornerInterval) {
+                    let firstFire = true;
+                    cornerInterval = setInterval(() => {
+                        if (firstFire) {
+                            musicDrawer.classList.remove('closed'); // 弹出播放器
+                            triggerTianyiSpread();                  // 彩蛋：66ccff 从左下角扩散铺满
+                            firstFire = false;
+                        }
+                        cycleBubble();  // 每 5 秒换一句台词（含第一次）
                     }, 5000);
                 }
             } else {
                 // 移出左下角，取消计时
-                clearTimeout(cornerTimer);
-                cornerTimer = null;
+                clearInterval(cornerInterval);
+                cornerInterval = null;
             }
         });
 
@@ -660,9 +987,9 @@
 
             initDefine(resourcesPath, backImageName, modelDir);
 
-            // 点击看板娘跳转到模型仓库
+            // 点击看板娘：循环切换说话气泡（不再跳转仓库）
             document.getElementById('live2d').addEventListener('click', () => {
-                window.open('https://github.com/x66ccff/lty-lv2d-v3');
+                cycleBubble();
             });
         }
     </script>
