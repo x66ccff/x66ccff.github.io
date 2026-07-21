@@ -439,7 +439,12 @@
             bottom: 0;                /* 全部从左下角原点出发 */
             pointer-events: none;
             line-height: 1;
-            will-change: transform, opacity;
+            opacity: 0;
+            /* 性能关键：所有粒子共享同一条 @keyframes（由 JS 注入一次），
+               个体差异（飞行方向、δ、摆动、转速）通过 CSS 变量注入。
+               这样浏览器只需解析一份 25 点关键帧，而不是创建
+               1380 个各自带 25 个关键帧的独立动画对象 */
+            animation: tianyi-fly 7.2s linear forwards;
         }
 
         .tianyi-particle.front {
@@ -692,18 +697,59 @@
         }
 
         // ============================================================
+        // 生成共享的粒子飞行动画 @keyframes（只注入一次）。
+        // 25 个采样点的平滑曲线与旧版逐粒子 WAAPI 完全一致：
+        //   径向位置 = FRONT_R * f + δ * smoothstep(f / 0.12)
+        //   摆动     = wob * sin(f * π)
+        //   缩放/透明度 = smoothstep(f / 0.05)
+        // 每个停靠点的常量乘数直接烘焙进 calc()，个体差异（--rx
+        // --dx --wx --rot 等）由粒子自己的 CSS 变量提供。
+        // ============================================================
+        let flyKeyframesInjected = false;
+
+        function injectFlyKeyframes() {
+            if (flyKeyframesInjected) return;
+            flyKeyframesInjected = true;
+
+            const STEPS = 24;
+            const RAMP = 0.12;
+            const ss = (x) => {
+                x = Math.max(0, Math.min(1, x));
+                return x * x * (3 - 2 * x);
+            };
+
+            let css = '@keyframes tianyi-fly{';
+            for (let k = 0; k <= STEPS; k++) {
+                const f = k / STEPS;
+                const s = ss(f / RAMP).toFixed(4);   // σ 爬升乘数
+                const w = Math.sin(f * Math.PI).toFixed(4);   // 摆动乘数
+                const si = ss(f / 0.05);              // 淡入/缩放系数
+                // 注意：calc() 里的 + 号两侧必须有空格，否则整条声明无效
+                css += (f * 100).toFixed(2) + '%{transform:translate('
+                    + 'calc(var(--rx) * ' + f.toFixed(4) + ' + var(--dx) * ' + s + ' + var(--wx) * ' + w + '),'
+                    + 'calc(var(--ry) * ' + f.toFixed(4) + ' + var(--dy) * ' + s + ' + var(--wy) * ' + w + '))'
+                    + ' rotate(calc(var(--rot)*' + f.toFixed(4) + '))'
+                    + ' scale(' + (0.4 + 0.6 * si).toFixed(4) + ');'
+                    + 'opacity:' + si.toFixed(4) + '}';
+            }
+            css += '}';
+
+            const style = document.createElement('style');
+            style.textContent = css;
+            document.head.appendChild(style);
+        }
+
+        // ============================================================
         // 彩蛋扩散：天依青圆形波前从左下角【匀速】铺开 + 双层剪影带
         // 流程：
-        //   1. 插入 fx 容器，里面放蓝色覆盖层（clip-path 圆心在左下角、
-        //      半径 0 → 150%，7.2s linear 匀速）
-        //   2. 生成音符/蝴蝶/∞ 剪影粒子，与波前同速同向飞行：
-        //      · front 粒子（天蓝色）：径向始终领先波前一段距离，
-        //        落在还没被覆盖的浅色页面上
-        //      · back 粒子（白色）：径向始终落后波前一段距离，
-        //        落在蓝色区域内
-        //      匀速 + 相同速率 ⇒ 与波前的相对距离全程恒定，严格同步
-        //   3. 波前铺满屏幕后，在蓝色覆盖下无缝切换 data-theme
-        //   4. 底层皮肤过渡完成后，fx 容器整体淡出并移除
+        //   1. 插入 fx 容器，里面放蓝色渐变圆盘（圆心钉在左下角，
+        //      scale 0 → 1，7.2s linear 匀速，边缘 16% 羽化）
+        //   2. 生成音符/蝴蝶/∞ 剪影粒子（共享一条 @keyframes），
+        //      与波前同速飞行：δ > 0 在波前之外 → 天蓝色剪影，
+        //      δ < 0 在波后蓝色区域内 → 白色剪影
+        //   3. 触发后 0.4s 开始全站文字缓慢换色（6s），body 背景
+        //      先钉住旧值，波前铺满后再放开
+        //   4. 一切完成后，fx 容器整体淡出并移除
         // ============================================================
         function triggerTianyiSpread() {
             // 已经是天依青，或上一轮扩散还没结束，直接跳过
@@ -752,12 +798,14 @@
             // 不变 —— 出发时大家都挤在原点，很快收成一条【等宽的窄剪影
             // 带】，峰值始终压在波前弧线上；δ ~ N(0, C²)，截断 ±3C。
             // δ > 0 的粒子在波前之外 → 天蓝色剪影；δ < 0 在波后 → 白色。
-            // 整条运动曲线用 25 个采样点逼近，没有任何分段折点。
+            //
+            // 性能关键：25 个采样点的平滑曲线只定义一次（共享
+            // @keyframes，见 injectFlyKeyframes），每个粒子的差异
+            // 用 7 个 CSS 变量注入，关键帧里的 calc() 按变量求值。
+            // 与之前 1380 × 25 个独立 WAAPI 关键帧相比，开场创建的
+            // 对象从约 3.5 万个降到 1380 个 span + 1 条 keyframes。
             // ============================================================
-            const EXPAND_MS = 7200;          // 1/4 速度
             const SIGMA = FRONT_R * 0.028;   // 常数 C：剪影带的最终标准差（小，等宽）
-            const RAMP = 0.12;               // σ 从 0 升到 C 所用的动画时长比例
-            const STEPS = 24;                // 关键帧采样点数（足够密，肉眼无折点）
 
             // Box-Muller 标准正态分布采样
             function randNormal() {
@@ -767,60 +815,67 @@
                 return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
             }
 
-            // smoothstep：两端切线水平，没有折点的平滑爬升
-            function smoothstep(x) {
-                x = Math.max(0, Math.min(1, x));
-                return x * x * (3 - 2 * x);
-            }
+            injectFlyKeyframes();
 
-            for (let i = 0; i < COUNT; i++) {
-                const p = document.createElement('span');
-                // 径向偏移 δ ~ N(0, C²)，截断到 ±3C；
-                // δ 的符号决定粒子在波前（天蓝）还是波后（白）
-                const gauss = Math.max(-3, Math.min(3, randNormal()));
-                const delta = gauss * SIGMA;
-                p.className = 'tianyi-particle ' + (delta >= 0 ? 'front' : 'back');
-                // 约三成是蝴蝶，其余是音符 / ∞
-                p.innerHTML = Math.random() < 0.3
-                    ? butterflySVG
-                    : glyphs[Math.floor(Math.random() * glyphs.length)];
-                p.style.fontSize = (12 + Math.random() * 26) + 'px';
-                p.style.opacity = '0';
-                fx.appendChild(p);
+            // 圆盘扩散立即开始（与粒子创建解耦）；
+            // 先强制 reflow 让 scale(0) 初始值生效，此时粒子还没创建，
+            // 这次 reflow 非常便宜
+            void overlay.offsetWidth;
+            overlay.classList.add('expanding');
 
-                // 从左下角出发的扇形：0°=水平向右，90°=竖直向上
-                const angle = (2 + Math.random() * 86) * Math.PI / 180;
-                const dirX = Math.cos(angle);
-                const dirY = -Math.sin(angle);   // 屏幕坐标 y 向下，向上取负
+            // 粒子分 4 帧分批创建，把首帧的样式/布局尖峰摊平；
+            // 每批用「原始延迟 - 已过去时间」作为 animation-delay
+            // （可为负，表示从中间开始播），所有粒子和单批创建时
+            // 严格处于同一时间轴，视觉效果完全一致
+            const t0 = performance.now();
+            const CHUNKS = 4;
+            const perChunk = Math.ceil(COUNT / CHUNKS);
 
-                const rot = (Math.random() - 0.5) * 70;
-                // 垂直于飞行方向的小摆动（不改径向分布），飞起来不死板
-                const wob = (Math.random() - 0.5) * SIGMA * 1.5;
+            for (let c = 0; c < CHUNKS; c++) {
+                requestAnimationFrame(() => {
+                    const elapsed = performance.now() - t0;
+                    const frag = document.createDocumentFragment();
+                    const end = Math.min(COUNT, (c + 1) * perChunk);
 
-                // 沿平滑曲线均匀采样 25 个关键帧：
-                // 半径 = R(t) + δ * smoothstep(t / t_ramp)，全程无折点
-                const frames = [];
-                for (let k = 0; k <= STEPS; k++) {
-                    const f = k / STEPS;
-                    const s = smoothstep(f / RAMP);             // σ 平滑爬升：0 → 1
-                    const r = FRONT_R * f + delta * s;          // 径向位置
-                    const w = wob * Math.sin(f * Math.PI);      // 中段摆动，两头为 0
-                    const x = dirX * r - dirY * w;
-                    const y = dirY * r + dirX * w;
-                    const si = smoothstep(f / 0.05);            // 淡入和缩放也平滑
-                    frames.push({
-                        transform: 'translate(' + x + 'px, ' + y + 'px) scale('
-                            + (0.4 + 0.6 * si) + ') rotate(' + (rot * f) + 'deg)',
-                        opacity: si,
-                        offset: f
-                    });
-                }
+                    for (let i = c * perChunk; i < end; i++) {
+                        const p = document.createElement('span');
+                        // 径向偏移 δ ~ N(0, C²)，截断到 ±3C；
+                        // δ 的符号决定粒子在波前（天蓝）还是波后（白）
+                        const gauss = Math.max(-3, Math.min(3, randNormal()));
+                        const delta = gauss * SIGMA;
+                        p.className = 'tianyi-particle ' + (delta >= 0 ? 'front' : 'back');
+                        // 约三成是蝴蝶，其余是音符 / ∞
+                        p.innerHTML = Math.random() < 0.3
+                            ? butterflySVG
+                            : glyphs[Math.floor(Math.random() * glyphs.length)];
 
-                p.animate(frames, {
-                    duration: EXPAND_MS,          // 与波前同寿命
-                    delay: Math.random() * 100,   // 微小错峰，避免过于整齐
-                    easing: 'linear',             // 与圆盘 scale 同为匀速 → 严格同步
-                    fill: 'forwards'
+                        // 从左下角出发的扇形：0°=水平向右，90°=竖直向上
+                        const angle = (2 + Math.random() * 86) * Math.PI / 180;
+                        const dirX = Math.cos(angle);
+                        const dirY = -Math.sin(angle);   // 屏幕坐标 y 向下，向上取负
+
+                        const rot = (Math.random() - 0.5) * 70;
+                        // 垂直于飞行方向的小摆动（不改径向分布），飞起来不死板
+                        const wob = (Math.random() - 0.5) * SIGMA * 1.5;
+
+                        // 个体差异全部注入 CSS 变量，共享关键帧里的 calc()
+                        // 会按这些变量求出与旧版逐帧一致的位置：
+                        //   (--rx, --ry)：波前方向 × FRONT_R
+                        //   (--dx, --dy)：波前方向 × δ
+                        //   (--wx, --wy)：垂直方向 × 摆动幅度
+                        p.style.cssText =
+                            'font-size:' + (12 + Math.random() * 26).toFixed(1) + 'px;' +
+                            '--rx:' + (dirX * FRONT_R).toFixed(2) + 'px;' +
+                            '--ry:' + (dirY * FRONT_R).toFixed(2) + 'px;' +
+                            '--dx:' + (dirX * delta).toFixed(2) + 'px;' +
+                            '--dy:' + (dirY * delta).toFixed(2) + 'px;' +
+                            '--wx:' + (-dirY * wob).toFixed(2) + 'px;' +
+                            '--wy:' + (dirX * wob).toFixed(2) + 'px;' +
+                            '--rot:' + rot.toFixed(2) + 'deg;' +
+                            'animation-delay:' + (Math.random() * 100 - elapsed).toFixed(0) + 'ms;';
+                        frag.appendChild(p);
+                    }
+                    fx.appendChild(frag);
                 });
             }
 
