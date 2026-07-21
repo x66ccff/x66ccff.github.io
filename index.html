@@ -672,7 +672,8 @@
     <div id="live2d-bubble" aria-live="polite"></div>
 
     <script>
-        // --- Theme toggle (三态循环: light → dark → tianyi) ---
+        // --- Theme toggle (两态切换: light ↔ dark；
+        //     天依青是隐藏彩蛋，只能由左下角触发) ---
         const themeBtn = document.getElementById('theme-btn');
         const html = document.documentElement;
 
@@ -856,13 +857,12 @@
 
         themeBtn.addEventListener('click', () => {
             const current = html.getAttribute('data-theme') || 'light';
-            const next = current === 'light' ? 'dark'
-                       : current === 'dark' ? 'tianyi' : 'light';
-            // 切进天依青也走同一套扩散动画，其它切换保持原样
-            if (next === 'tianyi') {
-                triggerTianyiSpread();
+            if (current === 'tianyi') {
+                // 彩蛋状态下点按钮：退出彩蛋，回到浅色
+                setTheme('light');
             } else {
-                setTheme(next);
+                // 普通状态只在浅色 / 深色之间切换，不再能点进天依青
+                setTheme(current === 'light' ? 'dark' : 'light');
             }
         });
 
