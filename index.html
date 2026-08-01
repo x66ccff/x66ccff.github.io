@@ -142,6 +142,33 @@
             color: var(--hairline);
         }
 
+        /* --- Avatar --- */
+        .header-row {
+            display: flex;
+            align-items: center;
+            gap: 1.6rem;
+        }
+
+        .header-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .avatar {
+            flex: 0 0 auto;
+            width: 6.8rem;
+            height: 6.8rem;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--hairline);
+            image-rendering: pixelated;   /* 像素画头像：缩放时保持硬边，不被平滑算法糊掉 */
+            transition: border-color 0.25s ease;
+        }
+
+        .avatar:hover {
+            border-color: var(--accent);
+        }
+
         /* --- Section headers --- */
         h2 {
             font-family: var(--mono);
@@ -496,6 +523,15 @@
                 padding: 3rem 1.25rem 4rem;
             }
 
+            .header-row {
+                gap: 1.1rem;
+            }
+
+            .avatar {
+                width: 4.8rem;
+                height: 4.8rem;
+            }
+
             .cv-entry {
                 flex-direction: column;
                 gap: 0;
@@ -527,10 +563,15 @@
 
         <!-- ===== Header ===== -->
         <header>
-            <h1>Kai Ruan<span class="cn">阮恺</span></h1>
-            <p class="affiliation">Ph.D. student, Gaoling School of Artificial Intelligence, Renmin University of China</p>
-            <div class="contact">
-                <a href="mailto:kairuan@ruc.edu.cn">kairuan@ruc.edu.cn</a><span class="sep">/</span><a href="https://scholar.google.com/citations?user=tokSmGMAAAAJ">Google Scholar</a><span class="sep">/</span><a href="https://github.com/x66ccff">GitHub</a><span class="sep">/</span><a href="https://huggingface.co/6cf">Hugging Face</a>
+            <div class="header-row">
+                <img class="avatar" src="round.jpeg" alt="Kai Ruan's avatar">
+                <div class="header-text">
+                    <h1>Kai Ruan<span class="cn">阮恺</span></h1>
+                    <p class="affiliation">Ph.D. student, Gaoling School of Artificial Intelligence, Renmin University of China</p>
+                    <div class="contact">
+                        <a href="mailto:kairuan@ruc.edu.cn">kairuan@ruc.edu.cn</a><span class="sep">/</span><a href="https://scholar.google.com/citations?user=tokSmGMAAAAJ">Google Scholar</a><span class="sep">/</span><a href="https://github.com/x66ccff">GitHub</a><span class="sep">/</span><a href="https://huggingface.co/6cf">Hugging Face</a>
+                    </div>
+                </div>
             </div>
         </header>
 
