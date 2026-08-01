@@ -957,6 +957,14 @@
             musicToggleBtn.addEventListener('click', () => {
                 musicDrawer.classList.toggle('closed');
             });
+
+            // 屏幕够宽时（与看板娘同一阈值），页面加载完毕后自动弹出播放器；
+            // 窄屏保持收起，由访客手动点开。想调宽度只改 768 这个数字即可
+            window.addEventListener('load', () => {
+                if (window.innerWidth > 768) {
+                    musicDrawer.classList.remove('closed');
+                }
+            });
         }
 
         // ============================================================
