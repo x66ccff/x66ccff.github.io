@@ -1071,7 +1071,15 @@
 
         function loadTrack(index) {
             currentTrack = (index + songIds.length) % songIds.length;
-            musicIframe.src = '//music.163.com/outchain/player?type=2&id='
+            // 网易云按 UA 分流：手机 UA 访问 /outchain/player 会被 302 到
+            // 【http://】的 /m/ 地址。本站是 HTTPS，这一跳 http 降级会被
+            // 浏览器按混合内容拦截 → 手机端 iframe 空白。
+            // 对策：手机 UA 直连 https 的 /m/ 端点，绕过重定向链
+            // （/m/ 与桌面端返回的播放器 HTML 完全相同，均无 X-Frame-Options）。
+            const isMobile = /Android|webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini|Mobile/i
+                .test(navigator.userAgent);
+            const base = 'https://music.163.com/' + (isMobile ? 'm/' : '') + 'outchain/player';
+            musicIframe.src = base + '?type=2&id='
                 + songIds[currentTrack] + '&auto=1&height=66';
             musicCounter.textContent = (currentTrack + 1) + ' / ' + songIds.length;
         }
