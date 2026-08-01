@@ -570,7 +570,10 @@
         <!-- ===== Header ===== -->
         <header>
             <div class="header-row">
-                <img class="avatar" src="round.jpeg" alt="Kai Ruan's avatar">
+                <!-- 头像用 GitHub Pages 绝对地址：页面部署到任何地方都能加载。
+                     注意不能用 github.com/.../blob/... 的预览页地址，
+                     那个返回 text/html 且带 nosniff，<img> 会被浏览器拒绝 -->
+                <img class="avatar" src="https://x66ccff.github.io/round.jpeg" alt="Kai Ruan's avatar">
                 <div class="header-text">
                     <h1>Kai Ruan<span class="cn">阮恺</span></h1>
                     <p class="affiliation">Ph.D. student, Gaoling School of Artificial Intelligence, Renmin University of China</p>
