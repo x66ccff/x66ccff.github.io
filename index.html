@@ -467,6 +467,12 @@
         #tianyi-canvas {
             position: absolute;
             inset: 0;
+            /* 多屏/混合 DPI 修复：必须显式铺满容器。
+               不设 CSS 尺寸时 canvas 按位图尺寸（W×dpr）作为固有尺寸渲染，
+               在 dpr≠1 的屏幕（多屏各屏缩放比例不同时最常见）元素会比
+               视口大 dpr 倍，左下角原点直接被顶出浏览器窗口之外 */
+            width: 100%;
+            height: 100%;
             pointer-events: none;
         }
 
@@ -743,8 +749,9 @@
         //   1. 插入 fx 容器，里面放蓝色渐变圆盘（圆心钉在左下角，
         //      scale 0 → 1，7.2s linear 匀速，边缘 16% 羽化）
         //   2. 音符/蝴蝶/∞ 剪影粒子在单个 canvas 上逐帧绘制，
-        //      与波前同速飞行：δ > 0 在波前之外 → 天蓝色剪影，
-        //      δ < 0 在波后蓝色区域内 → 白色剪影
+        //      与波前同速飞行；每个粒子的颜色在创建时从白色到
+        //      天依蓝 #66ccff 之间随机取一色（最深不超过天依蓝），
+        //      全程不变
         //   3. 触发后 0.4s 开始全站文字缓慢换色（6s），body 背景
         //      先钉住旧值，波前铺满后再放开
         //   4. 一切完成后，fx 容器整体淡出并移除
@@ -789,8 +796,9 @@
             //   所有粒子从左下角原点出发，径向偏移
             //       offset(t) = δ * smoothstep(t / t_ramp)
             //   σ 从 0 平滑升到小常数 C 后保持不变，形成【等宽窄剪影带】，
-            //   峰值始终压在波前弧线上；δ ~ N(0, C²)，截断 ±3C；
-            //   δ > 0 在波前之外 → 天蓝色剪影；δ < 0 在波后 → 白色。
+            //   峰值始终压在波前弧线上；δ ~ N(0, C²)，截断 ±3C。
+            //   颜色不分波前/波后：每个粒子创建时在白色与天依蓝
+            //   #66ccff 之间随机插值取色，最深不超过天依蓝，全程保持。
             // 整个粒子系统只占一个合成层，每帧 1380 次 fillText/路径
             // 填充，老电脑也扛得住。
             // ============================================================
@@ -813,6 +821,15 @@
                 return x * x * (3 - 2 * x);
             }
 
+            // 随机浅蓝色系：白 #ffffff (255,255,255) 与
+            // 天依蓝 #66ccff (102,204,255) 之间 RGB 线性插值，
+            // 最深不超过天依蓝，蓝色通道恒为 255
+            function randBlue() {
+                const t = Math.random();
+                return 'rgb(' + Math.round(255 - 153 * t) + ','
+                              + Math.round(255 - 51 * t) + ',255)';
+            }
+
             // 剪影素材：音符、无限符号用字符；蝴蝶用 Path2D
             const glyphs = ['♪', '♫', '∞', '∞'];   // ∞ 出现概率高一倍
             const butterflyPath = new Path2D(
@@ -832,7 +849,7 @@
                     dirX: Math.cos(angle),
                     dirY: -Math.sin(angle),       // 屏幕坐标 y 向下，向上取负
                     delta: gauss * SIGMA,
-                    front: gauss >= 0,            // 波前（天蓝）还是波后（白）
+                    color: randBlue(),            // 白 → 天依蓝 之间的随机色
                     rot: (Math.random() - 0.5) * 70 * Math.PI / 180,
                     wob: (Math.random() - 0.5) * SIGMA * 1.5,
                     size: Math.round(12 + Math.random() * 26),
@@ -862,9 +879,14 @@
                     (fontCache[s] = s + 'px "Source Serif 4", Georgia, serif');
             }
 
-            const t0 = performance.now();
+            // 粒子时钟不在任务里启动，而在【第一个 rAF 帧】启动：
+            // rAF 时间戳与 CSS transition 共用同一条帧时间线，
+            // 两者从同一帧开始推进，消除粒子带与渐变盘之间
+            // 原本最多约一帧的固定进度偏差
+            let t0 = null;
 
             function drawFrame(now) {
+                if (t0 === null) t0 = now;
                 const t = now - t0;
                 ctx.clearRect(0, 0, W, H);
 
@@ -891,7 +913,7 @@
                     ctx.translate(px, py);
                     ctx.rotate(pt.rot * f);
                     ctx.globalAlpha = si;
-                    ctx.fillStyle = pt.front ? '#66ccff' : '#ffffff';
+                    ctx.fillStyle = pt.color;
                     if (pt.glyph) {
                         ctx.font = fontOf(Math.max(1, Math.round(pt.size * (0.4 + 0.6 * si))));
                         ctx.fillText(pt.glyph, 0, 0);
