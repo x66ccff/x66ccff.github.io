@@ -569,11 +569,6 @@
             .music-drawer-container {
                 display: none !important;
             }
-
-            /* 移动端没有看板娘，也没有气泡 */
-            #live2d-bubble {
-                display: none !important;
-            }
         }
     </style>
 <base target="_blank">
@@ -1382,9 +1377,25 @@
     </canvas>
 
     <script type="text/javascript">
-        // 移动端不加载看板娘
-        if (window.innerWidth > 768) {
-            document.getElementById('live2d').style.display = 'block';
+        // 看板娘默认展示（含手机端），小屏按比例缩小而不是藏起来；
+        // 只在真的摆不下时（太矮的横屏、超窄屏）才不加载
+        (function () {
+            const vw = window.innerWidth, vh = window.innerHeight;
+            if (vw < 300 || vh < 430) return;      // 真的没有看板娘的空间
+            const l2d = document.getElementById('live2d');
+            l2d.style.display = 'block';
+            // 画布原始可见占位约 420×370（500 的画布带 left:-80 /
+            // bottom:-130 出血）。视口装不下原尺寸时等比缩小，
+            // transform-origin 钉在左下角，缩完还贴在原来的角落
+            const s = Math.min(1, vw / 520, vh / 680);
+            if (s < 1) {
+                l2d.style.transformOrigin = 'left bottom';
+                l2d.style.transform = 'scale(' + s.toFixed(3) + ')';
+                // 气泡锚点（她嘴边）跟着缩放比挪，别飘在半空
+                const bb = document.getElementById('live2d-bubble');
+                bb.style.left = Math.round(105 * s) + 'px';
+                bb.style.bottom = Math.round(235 * s) + 'px';
+            }
 
             var resourcesPath = 'https://cdn.jsdelivr.net/gh/x66ccff/lty-lv2d-v3@v1.2/';
             var backImageName = '';
@@ -1393,10 +1404,10 @@
             initDefine(resourcesPath, backImageName, modelDir);
 
             // 点击看板娘：循环切换说话气泡（不再跳转仓库）
-            document.getElementById('live2d').addEventListener('click', () => {
+            l2d.addEventListener('click', () => {
                 cycleBubble();
             });
-        }
+        })();
     </script>
 
 </body>
