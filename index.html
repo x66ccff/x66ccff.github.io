@@ -11,7 +11,7 @@
     <link rel="icon" type="image/svg+xml" href="https://x66ccff.github.io/images/thumbnails/luo_logo.svg">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=Space+Mono&display=swap" rel="stylesheet">
 
     <style>
         /* ============================================================
@@ -420,7 +420,7 @@
         #tianyi-fx {
             position: fixed;
             inset: 0;
-            z-index: -1;                /* 最底层：内容之下、body 背景之上 */
+            z-index: -2;                /* 最底层：内容、字符画之下、body 背景之上 */
             pointer-events: none;
         }
 
@@ -519,6 +519,25 @@
             border-bottom: 1px solid var(--hairline);
             transform: rotate(45deg);
             transition: background 1.2s ease, border-color 0.6s ease;
+        }
+
+        /* --- 背景字符画：开始播放音乐后出现，
+           天依跳舞视频以字符画形式循环播放。
+           z-index: -1 垫在页面内容之下、彩蛋扩散特效（-2）之上：
+           蓝色波前扫过时字符画始终可见 --- */
+        #ascii-bg {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 3s ease;    /* 触发后缓缓淡入 */
+        }
+
+        #ascii-bg.on {
+            opacity: 1;
         }
 
         /* --- Mobile --- */
@@ -1089,6 +1108,230 @@
 
         musicPrev.addEventListener('click', () => loadTrack(currentTrack - 1));
         musicNext.addEventListener('click', () => loadTrack(currentTrack + 1));
+
+        // ============================================================
+        // 背景字符画彩蛋：检测到【开始播放】后，在页面背景悄悄
+        // 铺一层【天依跳舞视频的字符画】（天依认真地卖萌给你看~）。
+        //
+        // 检测：网易云播放器是跨域 iframe，拿不到真实播放事件，
+        // 用两个"开始播放"信号近似（误触也无妨，效果很低调）：
+        //   1. 页面失焦且焦点落在播放器 iframe 上 → 用户点了播放器
+        //   2. 点了 上一首 / 下一首 → 切歌即播放（auto=1）
+        // 想不播歌也预览效果：打开 页面地址#ascii-test
+        //
+        // 数据：视频离线抽帧成 144×192 灰度序列（10fps），逐帧与
+        // 背景做差分抠像（背景≈180 的均匀灰），右上角 bilibili
+        // 水印区域已清零，结尾淡出黑帧已裁除（避免循环时闪白）。
+        // 数据放在独立的 ascii_video.js 里（gzip 后约 0.9MB），
+        // 开始播放音乐后才加载，不影响首屏。
+        // 字体用旧版矩阵雨的 Space Mono（等宽），小字号高分辨率，
+        // 人物表情细节更丰富。
+        //
+        // 渲染：帧密度直接映射到字符梯度 6/C/F（66CCFF 天依蓝），
+        // 颜色/透明度随主题调整（浅色和天依蓝主题下更显眼一点），
+        // 10fps 往返循环（0→尾→0，首尾接缝无跳变）。
+        // 彩蛋扩散期间：波前扫过的蓝色区域内画白色、未扫到的
+        // 区域画原主题色，字符画全程正确地贴在对应背景上。
+        // ============================================================
+        (function () {
+            const VC = 144, VR = 192;          // 字符画网格：144 列 × 192 行（2× 精细版）
+            const RAMP = ' 6CF';               // 字符梯度：只用 6 C F（66CCFF 天依蓝）
+            const FONT = '"Space Mono", "IBM Plex Mono", monospace';  // 旧版矩阵雨同款等宽字体
+            const FRAME_MS = 100;              // 10fps，与抽帧速率一致
+
+            // 各主题的字符透明度：小字号下单字符墨迹更小，
+            // 相应补一点透明度保持可见度；浅色（米白）和天依蓝背景上更显眼一点
+            const ALPHA = { light: 0.28, dark: 0.20, tianyi: 0.34 };
+
+            let started = false;
+            let canvas, ctx, W, H, cell, vox, voy, vSquash = 1, vStep = 1;
+            let lastT = 0, lastDraw = 0, frameNo = 0;
+            let theme = 'light', inkColor = '#66ccff', inkAlpha = ALPHA.light;
+            let vidFrames = null, vidIdx = 0, vidT0 = 0;
+            let reduceMotion = false;
+            let eggT0 = 0, eggFrontR = 0;    // 彩蛋扩散：首次见到 fx 的时刻与波前半径系数
+            let eggOutColor = '#66ccff', eggOutAlpha = ALPHA.light;  // 扩散前旧主题的画笔（波前之外用）
+
+            function refreshTheme() {
+                theme = document.documentElement.getAttribute('data-theme') || 'light';
+                const c = getComputedStyle(document.body)
+                    .getPropertyValue('--accent').trim();
+                if (c) inkColor = c;
+                inkAlpha = ALPHA[theme] || ALPHA.light;
+            }
+
+            function layout() {
+                W = window.innerWidth;
+                H = window.innerHeight;
+                const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+                canvas.width = Math.round(W * dpr);
+                canvas.height = Math.round(H * dpr);
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                // 尽量放大（高度约 96% 视口，宽受限时取宽），水平居中垫在内容后面。
+                // 视口太矮装不下全高时（手机横屏），隔行隔列抽样成 72×96
+                // 再排版，人物保持完整入镜，不会裁掉头顶
+                vStep = Math.floor(H * 0.96 / VR) < 3 ? 2 : 1;
+                const rows = VR / vStep, cols = VC / vStep;
+                cell = Math.max(3, Math.min(Math.floor(H * 0.96 / rows),
+                                            Math.floor(W * 0.92 / cols)));
+                vox = Math.round((W - cell * cols) / 2);
+                voy = Math.round((H - cell * rows) / 2);
+                // 等宽对齐：实测当前字体的字符前进宽度和字形墨高，
+                // 横向按字宽定字号（列距=一格），纵向按墨高算压缩比
+                // （行高=一格）——不管实际渲染的是 Space Mono
+                // 还是回退字体，横竖都不重叠
+                ctx.font = '100px ' + FONT;
+                const mt = ctx.measureText('6CF');
+                const adv = mt.width / 3 / 100;                 // 单字符前进宽度 (em)
+                const inkH = ((mt.actualBoundingBoxAscent || 72)
+                            + (mt.actualBoundingBoxDescent || 0)) / 100;  // 墨高 (em)
+                ctx.font = Math.round(cell / adv) + 'px ' + FONT;
+                vSquash = Math.min(1, adv / inkH * 0.92);       // 垂直压缩比（留 8% 行距）
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+            }
+
+            // 加载字符画帧数据（ascii_video.js，开始播放音乐后才请求）
+            function loadVideo(done) {
+                const s = document.createElement('script');
+                s.src = 'ascii_video.js';
+                s.onload = () => {
+                    const D = window.ASCII_VIDEO;
+                    if (!D || D.cols !== VC || D.rows !== VR) return;
+                    const total = VC * VR;
+                    vidFrames = [];
+                    for (let f = 0; f * total < D.data.length; f++) {
+                        const arr = new Float32Array(total);
+                        const off = f * total;
+                        for (let i = 0; i < total; i++) {
+                            arr[i] = parseInt(D.data[off + i], 16) / 15;
+                        }
+                        vidFrames.push(arr);
+                    }
+                    done();
+                };
+                document.head.appendChild(s);
+            }
+
+            function draw() {
+                if (!vidFrames) return;
+                ctx.clearRect(0, 0, W, H);
+                // 主题可能中途切换（含天依蓝彩蛋），每隔一会儿重取一次颜色
+                if (frameNo % 30 === 0) refreshTheme();
+
+                // 彩蛋扩散进行中：算波前半径 R(t)，与 triggerTianyiSpread 同参数
+                // （圆心 = 左下角，FRONT_R = 1.104 × 屏幕对角线，7200ms 匀速）
+                let eggR = -1;
+                if (document.getElementById('tianyi-fx')) {
+                    const now = performance.now();
+                    if (!eggT0) {
+                        eggT0 = now;
+                        eggFrontR = 1.104 * Math.hypot(W, H);
+                        // 扩散 0.4s 后 --accent 就变白了，波前之外的画笔
+                        // 要钉住触发前的旧主题色，否则浅色区字符会隐身
+                        refreshTheme();
+                        eggOutColor = inkColor;
+                        eggOutAlpha = inkAlpha;
+                    }
+                    eggR = eggFrontR * Math.min(1, (now - eggT0) / 7200);
+                } else if (eggT0) {
+                    eggT0 = 0;   // 扩散结束（含退出彩蛋），回到普通单色模式
+                }
+
+                ctx.save();
+                ctx.scale(1, vSquash);   // 垂直压缩字形，行高对齐到一格
+                const f = vidFrames[vidIdx];
+                const last = RAMP.length - 1;
+                for (let y = 0; y < VR; y += vStep) {
+                    const py = (voy + (y / vStep) * cell + cell / 2) / vSquash;
+                    // 彩蛋模式：本行被蓝色波前盖到的分界列（屏幕坐标）
+                    let splitX = -1;
+                    if (eggR >= 0) {
+                        const dy = H - (voy + (y / vStep) * cell + cell / 2);  // 距底边高度
+                        splitX = dy < eggR ? Math.sqrt(eggR * eggR - dy * dy) : 0;
+                    }
+                    let curBlue = null;   // 当前画笔状态：true=白(波后) false=主题色(波前之外)
+                    for (let x = 0; x < VC; x += vStep) {
+                        const v = f[y * VC + x];
+                        if (v < 0.06) continue;   // 空白格跳过
+                        if (eggR >= 0) {
+                            const px = vox + (x / vStep) * cell + cell / 2;
+                            const inside = px < splitX;
+                            if (inside !== curBlue) {
+                                curBlue = inside;
+                                ctx.fillStyle = inside ? '#ffffff' : eggOutColor;
+                                ctx.globalAlpha = inside ? ALPHA.tianyi : eggOutAlpha;
+                            }
+                        } else if (curBlue !== false) {
+                            curBlue = false;
+                            ctx.fillStyle = inkColor;
+                            // 低调靠恒定透明度；明暗变化全部交给 6/C/F 字符梯度
+                            ctx.globalAlpha = inkAlpha;
+                        }
+                        ctx.fillText(RAMP[Math.round(v * last)],
+                                     vox + (x / vStep) * cell + cell / 2, py);
+                    }
+                }
+                ctx.restore();
+                ctx.globalAlpha = 1;
+            }
+
+            function loop(now) {
+                if (!started) return;
+                if (!lastT) { lastT = now; lastDraw = now; draw(); }
+                else if (now - lastDraw >= FRAME_MS) {
+                    lastDraw = now;
+                    frameNo++;
+                    // 往返循环（0→尾→0）：首尾相接无跳变，周期约 55 秒
+                    const len = vidFrames.length, cyc = 2 * len - 2;
+                    const raw = Math.floor((now - vidT0) / 100) % cyc;
+                    vidIdx = raw < len ? raw : cyc - raw;
+                    draw();
+                }
+                requestAnimationFrame(loop);
+            }
+
+            function start() {
+                if (started) return;
+                started = true;
+                reduceMotion = window.matchMedia(
+                    '(prefers-reduced-motion: reduce)').matches;
+                canvas = document.createElement('canvas');
+                canvas.id = 'ascii-bg';
+                canvas.setAttribute('aria-hidden', 'true');
+                document.body.appendChild(canvas);
+                ctx = canvas.getContext('2d');
+                layout();
+                refreshTheme();
+                window.addEventListener('resize', () => { layout(); draw(); });
+                // 网络字体异步加载完成后按真实字体重新校准字号
+                if (document.fonts && document.fonts.ready) {
+                    document.fonts.ready.then(() => {
+                        if (started) { layout(); draw(); }
+                    });
+                }
+                loadVideo(() => {
+                    vidT0 = performance.now();
+                    if (reduceMotion) {
+                        draw();   // 尊重"减弱动态效果"：只画一帧静态字符画
+                    } else {
+                        requestAnimationFrame(loop);
+                    }
+                    // 首帧就绪后缓缓淡入（CSS opacity 3s）
+                    requestAnimationFrame(() => canvas.classList.add('on'));
+                });
+            }
+
+            // —— 触发信号 1：点击了网易云播放器 iframe（按播放键）——
+            window.addEventListener('blur', () => {
+                if (document.activeElement === musicIframe) start();
+            });
+            // —— 触发信号 2：切歌（auto=1，必播放）——
+            musicPrev.addEventListener('click', start);
+            musicNext.addEventListener('click', start);
+            // —— 调试入口：不播歌也想看效果，访问 #ascii-test ——
+            if (location.hash === '#ascii-test') start();
+        })();
 
         loadTrack(0);
     </script>
