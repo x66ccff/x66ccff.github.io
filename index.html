@@ -738,7 +738,7 @@
                 <span id="music-counter">1 / 1</span>
                 <button id="music-next" aria-label="Next track"><i class="fas fa-forward-step"></i></button>
             </div>
-            <iframe id="music-iframe" frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src=""></iframe>
+            <iframe id="music-iframe" frameborder="no" border="0" marginwidth="0" marginheight="0" width="330" height="86" src="" allow="autoplay"></iframe>
         </div>
     </div>
 
@@ -1114,9 +1114,11 @@
         // 铺一层【天依跳舞视频的字符画】（天依认真地卖萌给你看~）。
         //
         // 检测：网易云播放器是跨域 iframe，拿不到真实播放事件，
-        // 用两个"开始播放"信号近似（误触也无妨，效果很低调）：
-        //   1. 页面失焦且焦点落在播放器 iframe 上 → 用户点了播放器
-        //   2. 点了 上一首 / 下一首 → 切歌即播放（auto=1）
+        // 用四个"开始播放"信号近似（误触也无妨，效果很低调）：
+        //   1. 页面失焦且焦点落在播放器 iframe 上（Chromium 点播放键）
+        //   2. 轮询焦点兜底（Firefox/Safari/手机点 iframe 不触发 blur）
+        //   3. 点了 上一首 / 下一首 → 切歌即播放（auto=1）
+        //   4. 页面交互过后播放器重新加载完成（配合 allow="autoplay" 必出声）
         // 想不播歌也预览效果：打开 页面地址#ascii-test
         //
         // 数据：视频离线抽帧成 144×192 灰度序列（10fps），逐帧与
@@ -1191,26 +1193,46 @@
                 ctx.textBaseline = 'middle';
             }
 
-            // 加载字符画帧数据（ascii_video.js，开始播放音乐后才请求）
+            // 字符画数据地址，按优先级依次尝试，全部失败则放弃彩蛋：
+            //   1. GitHub Pages（仓库 x66ccff.github.io 根目录，缓存仅 10 分钟，
+            //      更新仓库后很快生效）
+            //   2. jsDelivr CDN（同一仓库的 CDN 镜像，更抗造但 @main 缓存较长，
+            //      想立刻生效可把 @main 换成 @commit 哈希）
+            //   3. 同目录本地文件（整站一起部署时的兜底）
+            // 注意：不要用 raw.githubusercontent.com——它带 nosniff 头且
+            // MIME 是 text/plain，浏览器会拒绝当脚本执行。
+            const ASCII_VIDEO_URLS = [
+                'https://x66ccff.github.io/ascii_video.js',
+                'https://cdn.jsdelivr.net/gh/x66ccff/x66ccff.github.io@main/ascii_video.js',
+                'ascii_video.js'
+            ];
+
+            // 加载字符画帧数据（开始播放音乐后才请求，跨域 script 无需 CORS）
             function loadVideo(done) {
-                const s = document.createElement('script');
-                s.src = 'ascii_video.js';
-                s.onload = () => {
-                    const D = window.ASCII_VIDEO;
-                    if (!D || D.cols !== VC || D.rows !== VR) return;
-                    const total = VC * VR;
-                    vidFrames = [];
-                    for (let f = 0; f * total < D.data.length; f++) {
-                        const arr = new Float32Array(total);
-                        const off = f * total;
-                        for (let i = 0; i < total; i++) {
-                            arr[i] = parseInt(D.data[off + i], 16) / 15;
+                let tried = 0;
+                const tryNext = () => {
+                    if (tried >= ASCII_VIDEO_URLS.length) return;
+                    const s = document.createElement('script');
+                    s.src = ASCII_VIDEO_URLS[tried++];
+                    s.onerror = tryNext;   // 上一个地址失败，换下一家
+                    s.onload = () => {
+                        const D = window.ASCII_VIDEO;
+                        if (!D || D.cols !== VC || D.rows !== VR) return;
+                        const total = VC * VR;
+                        vidFrames = [];
+                        for (let f = 0; f * total < D.data.length; f++) {
+                            const arr = new Float32Array(total);
+                            const off = f * total;
+                            for (let i = 0; i < total; i++) {
+                                arr[i] = parseInt(D.data[off + i], 16) / 15;
+                            }
+                            vidFrames.push(arr);
                         }
-                        vidFrames.push(arr);
-                    }
-                    done();
+                        done();
+                    };
+                    document.head.appendChild(s);
                 };
-                document.head.appendChild(s);
+                tryNext();
             }
 
             function draw() {
@@ -1323,12 +1345,27 @@
             }
 
             // —— 触发信号 1：点击了网易云播放器 iframe（按播放键）——
+            //    Chromium 点进 iframe 会触发 window blur 且焦点落进去
             window.addEventListener('blur', () => {
                 if (document.activeElement === musicIframe) start();
             });
-            // —— 触发信号 2：切歌（auto=1，必播放）——
+            // —— 触发信号 2：轮询兜底——Firefox/Safari/部分手机浏览器
+            //    点进 iframe 时窗口不触发 blur，焦点只是悄悄落进去，
+            //    定期看一眼（开始后自动停止轮询）
+            const focusPoll = setInterval(() => {
+                if (started) { clearInterval(focusPoll); return; }
+                if (document.activeElement === musicIframe) start();
+            }, 700);
+            // —— 触发信号 3：切歌（auto=1，必播放）——
             musicPrev.addEventListener('click', start);
             musicNext.addEventListener('click', start);
+            // —— 触发信号 4：页面有过交互之后播放器（重新）加载完成。
+            //    iframe 带 allow="autoplay"，此时 auto=1 会真正出声。
+            //    首次加载（页面还没交互过）不会误触发
+            musicIframe.addEventListener('load', () => {
+                if (navigator.userActivation
+                    && navigator.userActivation.hasBeenActive) start();
+            });
             // —— 调试入口：不播歌也想看效果，访问 #ascii-test ——
             if (location.hash === '#ascii-test') start();
         })();
