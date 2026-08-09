@@ -1202,17 +1202,37 @@
                 'ascii_video.js'
             ];
 
-            // 加载字符画帧数据（开始播放音乐后才请求，跨域 script 无需 CORS）
-            function loadVideo(done) {
+            // 加载字符画帧数据（开始播放音乐后才请求，跨域 script 无需 CORS）。
+            // 单个地址最多等 8 秒——国内访问 GitHub/jsDelivr 不稳定，
+            // 挂起（无响应）也要换下一家，不能干等浏览器超时；
+            // 三家全挂回调 onfail，让外层解除占用、下次点击重试
+            function loadVideo(done, onfail) {
                 let tried = 0;
                 const tryNext = () => {
-                    if (tried >= ASCII_VIDEO_URLS.length) return;
+                    if (tried >= ASCII_VIDEO_URLS.length) {
+                        if (onfail) onfail();
+                        return;
+                    }
                     const s = document.createElement('script');
                     s.src = ASCII_VIDEO_URLS[tried++];
-                    s.onerror = tryNext;   // 上一个地址失败，换下一家
+                    const timer = setTimeout(() => {
+                        s.onload = s.onerror = null;
+                        s.remove();
+                        tryNext();               // 挂起超时，换下一家
+                    }, 8000);
+                    s.onerror = () => {
+                        clearTimeout(timer);
+                        s.remove();
+                        tryNext();               // 上一个地址失败，换下一家
+                    };
                     s.onload = () => {
+                        clearTimeout(timer);
                         const D = window.ASCII_VIDEO;
-                        if (!D || D.cols !== VC || D.rows !== VR) return;
+                        if (!D || D.cols !== VC || D.rows !== VR) {
+                            s.remove();
+                            tryNext();           // 数据不对，换下一家
+                            return;
+                        }
                         const total = VC * VR;
                         vidFrames = [];
                         for (let f = 0; f * total < D.data.length; f++) {
@@ -1313,19 +1333,21 @@
                 started = true;
                 reduceMotion = window.matchMedia(
                     '(prefers-reduced-motion: reduce)').matches;
-                canvas = document.createElement('canvas');
-                canvas.id = 'ascii-bg';
-                canvas.setAttribute('aria-hidden', 'true');
-                document.body.appendChild(canvas);
-                ctx = canvas.getContext('2d');
-                layout();
-                refreshTheme();
-                window.addEventListener('resize', () => { layout(); draw(); });
-                // 网络字体异步加载完成后按真实字体重新校准字号
-                if (document.fonts && document.fonts.ready) {
-                    document.fonts.ready.then(() => {
-                        if (started) { layout(); draw(); }
-                    });
+                if (!canvas) {   // 重试时画布已存在，不要重复创建/重复挂监听
+                    canvas = document.createElement('canvas');
+                    canvas.id = 'ascii-bg';
+                    canvas.setAttribute('aria-hidden', 'true');
+                    document.body.appendChild(canvas);
+                    ctx = canvas.getContext('2d');
+                    layout();
+                    refreshTheme();
+                    window.addEventListener('resize', () => { layout(); draw(); });
+                    // 网络字体异步加载完成后按真实字体重新校准字号
+                    if (document.fonts && document.fonts.ready) {
+                        document.fonts.ready.then(() => {
+                            if (started) { layout(); draw(); }
+                        });
+                    }
                 }
                 loadVideo(() => {
                     vidT0 = performance.now();
@@ -1336,6 +1358,10 @@
                     }
                     // 首帧就绪后缓缓淡入（CSS opacity 3s）
                     requestAnimationFrame(() => canvas.classList.add('on'));
+                }, () => {
+                    // 三个数据源全挂了（网络抖动等）：解除占用，
+                    // 下次点播放/切歌时从头重试，不再一坏到底
+                    started = false;
                 });
             }
 
@@ -1346,9 +1372,10 @@
             });
             // —— 触发信号 2：轮询兜底——Firefox/Safari/部分手机浏览器
             //    点进 iframe 时窗口不触发 blur，焦点只是悄悄落进去，
-            //    定期看一眼（开始后自动停止轮询）
+            //    定期看一眼。注意：要等【数据真正加载完】才停轮询——
+            //    若首轮加载全挂，焦点还在播放器里，靠它自动重试
             const focusPoll = setInterval(() => {
-                if (started) { clearInterval(focusPoll); return; }
+                if (vidFrames) { clearInterval(focusPoll); return; }
                 if (document.activeElement === musicIframe) start();
             }, 700);
             // —— 触发信号 3：切歌（auto=1，必播放）——
