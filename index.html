@@ -1188,51 +1188,58 @@
                 ctx.textBaseline = 'middle';
             }
 
-            // 字符画数据地址，按优先级依次尝试，全部失败则放弃彩蛋：
-            //   1. GitHub Pages（仓库 x66ccff.github.io 根目录，缓存仅 10 分钟，
-            //      更新仓库后很快生效）
-            //   2. jsDelivr CDN（同一仓库的 CDN 镜像，更抗造但 @main 缓存较长，
-            //      想立刻生效可把 @main 换成 @commit 哈希）
-            //   3. 同目录本地文件（整站一起部署时的兜底）
+            // 字符画数据地址，【并联竞速】：第一个返回合法数据的胜出。
+            //   1. GitHub Pages（仓库根目录，缓存仅 10 分钟）
+            //   2/3. jsDelivr 两个 CDN 入口（cdn 域名在国内常被 DNS 污染，
+            //        fastly 入口通常可用，互为备份）
+            //   4. 同目录本地文件（整站一起部署时的兜底）
             // 注意：不要用 raw.githubusercontent.com——它带 nosniff 头且
             // MIME 是 text/plain，浏览器会拒绝当脚本执行。
             const ASCII_VIDEO_URLS = [
                 'https://x66ccff.github.io/ascii_video.js',
                 'https://cdn.jsdelivr.net/gh/x66ccff/x66ccff.github.io@main/ascii_video.js',
+                'https://fastly.jsdelivr.net/gh/x66ccff/x66ccff.github.io@main/ascii_video.js',
                 'ascii_video.js'
             ];
 
             // 加载字符画帧数据（开始播放音乐后才请求，跨域 script 无需 CORS）。
-            // 单个地址最多等 8 秒——国内访问 GitHub/jsDelivr 不稳定，
-            // 挂起（无响应）也要换下一家，不能干等浏览器超时；
-            // 三家全挂回调 onfail，让外层解除占用、下次点击重试
+            // 所有数据源【同时】发出请求，谁先返回合法数据谁赢，其余忽略——
+            // 网络抖动时延迟从"各源超时之和"降到"最快那个源"；
+            // 每个源 8 秒判死（挂起也算），全灭回调 onfail 让外层稍后重试
             function loadVideo(done, onfail) {
-                let tried = 0;
-                const tryNext = () => {
-                    if (tried >= ASCII_VIDEO_URLS.length) {
-                        if (onfail) onfail();
-                        return;
-                    }
+                // 按绝对地址去重：部署在 x66ccff.github.io 上时
+                // 第 1 条与本地路径是同一个文件，没必要拉两遍
+                const seen = {}, urls = [];
+                for (const u of ASCII_VIDEO_URLS) {
+                    const abs = new URL(u, location.href).href;
+                    if (seen[abs]) continue;
+                    seen[abs] = 1;
+                    urls.push(u);
+                }
+                let pending = urls.length, won = false;
+                if (!pending) { if (onfail) onfail(); return; }
+                urls.forEach(u => {
                     const s = document.createElement('script');
-                    s.src = ASCII_VIDEO_URLS[tried++];
-                    const timer = setTimeout(() => {
+                    s.src = u;
+                    let dead = false;
+                    const fail = () => {
+                        if (dead || won) return;
+                        dead = true;
+                        clearTimeout(timer);
                         s.onload = s.onerror = null;
                         s.remove();
-                        tryNext();               // 挂起超时，换下一家
-                    }, 8000);
-                    s.onerror = () => {
-                        clearTimeout(timer);
-                        s.remove();
-                        tryNext();               // 上一个地址失败，换下一家
+                        if (--pending === 0 && !won && onfail) onfail();
                     };
+                    const timer = setTimeout(fail, 8000);
+                    s.onerror = fail;
                     s.onload = () => {
-                        clearTimeout(timer);
+                        if (dead || won) return;
                         const D = window.ASCII_VIDEO;
-                        if (!D || D.cols !== VC || D.rows !== VR) {
-                            s.remove();
-                            tryNext();           // 数据不对，换下一家
-                            return;
-                        }
+                        // 合法数据校验：能挡住"404 页面带 200 状态"这类假成功
+                        if (!D || D.cols !== VC || D.rows !== VR) { fail(); return; }
+                        dead = true;
+                        clearTimeout(timer);
+                        won = true;
                         const total = VC * VR;
                         vidFrames = [];
                         for (let f = 0; f * total < D.data.length; f++) {
@@ -1246,8 +1253,7 @@
                         done();
                     };
                     document.head.appendChild(s);
-                };
-                tryNext();
+                });
             }
 
             function draw() {
